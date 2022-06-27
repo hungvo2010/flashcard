@@ -7,7 +7,7 @@ document.getElementById("save_card").addEventListener("click", () => {
 });
 var iframe = document.getElementById('iframe')
 
-iframe.onload = function() {
+iframe.onload = function () {
   // var doc = iframe.contentWindow.document;
   // doc.addEventListener('mouseup', Handler);
   // doc.addEventListener('mousedown', Handler);
@@ -15,21 +15,27 @@ iframe.onload = function() {
   // iframe.document.addEventListener('mouseup', Handler)
   window.addEventListener('mouseup', Handler)
 }
-  
+
 
 // iframe.addEventListener('load', function() {
 //   // Deliver the port to the iframe and initialize
 //   iframe.contentWindow.document.addEventListener('mouseup', Handler);
 //  })
 
-function addressIP(){
+function addressIP() {
   let query = document.getElementById("inputEmail3").value
-  console.log(query)
+  // console.log(query)
+  fetch(query, {
+    method: "GET",
+  })
+  .then(src => {
+    
+  })
   //document.getElementById("iframe").removeAttribute('src')
   document.getElementById("iframe").setAttribute("src", query)
-  
-  
-}
+
+
+} 
 
 function Handler() {
   alert('works');
@@ -74,7 +80,7 @@ flashcardMaker = (text, delThisIndex) => {
   flashcard.appendChild(del);
 
   flashcard.addEventListener("click", () => {
-    if(answer.style.display == "none")
+    if (answer.style.display == "none")
       answer.style.display = "block";
     else
       answer.style.display = "none";
@@ -90,8 +96,8 @@ addFlashcard = () => {
   const answer = document.querySelector("#answer");
 
   let flashcard_info = {
-    'my_question' : question.value,
-    'my_answer'  : answer.value
+    'my_question': question.value,
+    'my_answer': answer.value
   }
 
   contentArray.push(flashcard_info);
@@ -116,7 +122,7 @@ function onMouseDown() {
   var shareBox = document.querySelector('#shareBox');
   if (shareBox !== null)
     shareBox.remove();
-  
+
 }
 
 function onMouseUp() {
@@ -126,14 +132,14 @@ function onMouseUp() {
   if (txt !== "") {
     var range = sel.getRangeAt(0);
     //if (range.startContainer.parentElement.parentElement.localName === "article" || range.startContainer.parentElement.localName === "article") {
-      iframe.contentWindow.body.insertBefore(iframe.contentWindow.importNode(temp.content, true), temp);
-      var rect = range.getBoundingClientRect();
-      var shareBox = document.querySelector('#shareBox');
-      shareBox.style.top = `calc(${rect.top}px - 38px)`;
-      shareBox.style.left = `calc(${rect.left}px + calc(${rect.width}px / 2) - 30px)`;
-      var shareBtn = shareBox.querySelector('button');
-      shareBtn['shareTxt'] = txt;
-      shareBtn.addEventListener('mousedown', onShareClick, true);
+    iframe.contentWindow.body.insertBefore(iframe.contentWindow.importNode(temp.content, true), temp);
+    var rect = range.getBoundingClientRect();
+    var shareBox = document.querySelector('#shareBox');
+    shareBox.style.top = `calc(${rect.top}px - 38px)`;
+    shareBox.style.left = `calc(${rect.left}px + calc(${rect.width}px / 2) - 30px)`;
+    var shareBtn = shareBox.querySelector('button');
+    shareBtn['shareTxt'] = txt;
+    shareBtn.addEventListener('mousedown', onShareClick, true);
     //}
   }
 }
