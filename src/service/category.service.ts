@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { db } from '../firebase.config';
+import { db } from '../database/firebase.config';
 import {
   collection,
   getDoc,
