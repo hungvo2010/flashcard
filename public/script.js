@@ -6,6 +6,7 @@ document.getElementById("save_card").addEventListener("click", () => {
   addFlashcard();
 });
 var iframe = document.getElementById('iframe')
+
 var temp;
 iframe.onload = function() {
 //   // var doc = iframe.contentWindow.document;
@@ -17,32 +18,33 @@ iframe.onload = function() {
   iframe.contentWindow.document.addEventListener('mousedown', onMouseDown);
   iframe.contentWindow.document.addEventListener('mouseup', onMouseUp);
   temp = document.querySelector('#shareBoxTemplate');
+
+
+
 }
-  
+
 
 // iframe.addEventListener('load', function() {
 //   // Deliver the port to the iframe and initialize
 //   iframe.contentWindow.document.addEventListener('mouseup', Handler);
 //  })
-// var puppeteer = require('../node_modules/puppeteer');
-function addressIP(){
-  // let query = document.getElementById("inputEmail3").value
+
+
+function addressIP() {
+  let query = document.getElementById("inputEmail3").value
   // console.log(query)
-  
-// (async () => {
-//   const browser = await puppeteer.launch();
-//   const page = await browser.newPage();
-//   await page.goto('https://techoverflow.net', {waitUntil: 'domcontentloaded'});
-//   // Wait for 5 seconds
-//   document.getElementById("iframe").setAttribute("srcdoc", await page.content())
-//   // Take screenshot
-//   await browser.close();
-// })();
+  fetch(query, {
+    method: "GET",
+  })
+  .then(src => {
+    
+  })
   //document.getElementById("iframe").removeAttribute('src')
-  
-  
-  
-}
+  document.getElementById("iframe").setAttribute("src", query)
+
+
+} 
+
 
 function Handler() {
   alert('works');
@@ -87,7 +89,7 @@ flashcardMaker = (text, delThisIndex) => {
   flashcard.appendChild(del);
 
   flashcard.addEventListener("click", () => {
-    if(answer.style.display == "none")
+    if (answer.style.display == "none")
       answer.style.display = "block";
     else
       answer.style.display = "none";
@@ -103,8 +105,8 @@ addFlashcard = () => {
   const answer = document.querySelector("#answer");
 
   let flashcard_info = {
-    'my_question' : question.value,
-    'my_answer'  : answer.value
+    'my_question': question.value,
+    'my_answer': answer.value
   }
 
   contentArray.push(flashcard_info);
@@ -128,7 +130,9 @@ function onMouseDown() {
   iframe.contentWindow.getSelection().removeAllRanges();
   var shareBox = document.querySelector('#shareBox');
   if (shareBox !== null)
+
     shareBox.remove(); 
+
 }
 
 function onMouseUp() {
@@ -139,6 +143,7 @@ function onMouseUp() {
   if (txt !== "") {
     var range = sel.getRangeAt(0);
     //if (range.startContainer.parentElement.parentElement.localName === "article" || range.startContainer.parentElement.localName === "article") {
+
       
       document.body.insertBefore(document.importNode(temp.content, true), null);
       var rect = range.getBoundingClientRect();
@@ -149,6 +154,7 @@ function onMouseUp() {
       var shareBtn = shareBox.querySelector('button');
       shareBtn['shareTxt'] = txt;
       shareBtn.addEventListener('mousedown', onShareClick, true);
+
     //}
   }
 }
