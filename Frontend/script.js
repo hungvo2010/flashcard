@@ -6,14 +6,17 @@ document.getElementById("save_card").addEventListener("click", () => {
   addFlashcard();
 });
 var iframe = document.getElementById('iframe')
-
+var temp;
 iframe.onload = function() {
-  // var doc = iframe.contentWindow.document;
-  // doc.addEventListener('mouseup', Handler);
-  // doc.addEventListener('mousedown', Handler);
-  // console.log(doc)
-  // iframe.document.addEventListener('mouseup', Handler)
-  window.addEventListener('mouseup', Handler)
+//   // var doc = iframe.contentWindow.document;
+//   // doc.addEventListener('mouseup', Handler);
+//   // doc.addEventListener('mousedown', Handler);
+//   // console.log(doc)
+//   // iframe.document.addEventListener('mouseup', Handler)
+//   window.addEventListener('mouseup', Handler)
+  iframe.contentWindow.document.addEventListener('mousedown', onMouseDown);
+  iframe.contentWindow.document.addEventListener('mouseup', onMouseUp);
+  temp = document.querySelector('#shareBoxTemplate');
 }
   
 
@@ -21,12 +24,22 @@ iframe.onload = function() {
 //   // Deliver the port to the iframe and initialize
 //   iframe.contentWindow.document.addEventListener('mouseup', Handler);
 //  })
-
+// var puppeteer = require('../node_modules/puppeteer');
 function addressIP(){
-  let query = document.getElementById("inputEmail3").value
-  console.log(query)
+  // let query = document.getElementById("inputEmail3").value
+  // console.log(query)
+  
+// (async () => {
+//   const browser = await puppeteer.launch();
+//   const page = await browser.newPage();
+//   await page.goto('https://techoverflow.net', {waitUntil: 'domcontentloaded'});
+//   // Wait for 5 seconds
+//   document.getElementById("iframe").setAttribute("srcdoc", await page.content())
+//   // Take screenshot
+//   await browser.close();
+// })();
   //document.getElementById("iframe").removeAttribute('src')
-  document.getElementById("iframe").setAttribute("src", query)
+  
   
   
 }
@@ -115,22 +128,24 @@ function onMouseDown() {
   iframe.contentWindow.getSelection().removeAllRanges();
   var shareBox = document.querySelector('#shareBox');
   if (shareBox !== null)
-    shareBox.remove();
-  
+    shareBox.remove(); 
 }
 
 function onMouseUp() {
   console.log('haha')
   var sel = iframe.contentWindow.getSelection(),
-    txt = sel.toString();
+  txt = sel.toString();
+  console.log(txt)
   if (txt !== "") {
     var range = sel.getRangeAt(0);
     //if (range.startContainer.parentElement.parentElement.localName === "article" || range.startContainer.parentElement.localName === "article") {
-      iframe.contentWindow.body.insertBefore(iframe.contentWindow.importNode(temp.content, true), temp);
+      
+      document.body.insertBefore(document.importNode(temp.content, true), null);
       var rect = range.getBoundingClientRect();
       var shareBox = document.querySelector('#shareBox');
-      shareBox.style.top = `calc(${rect.top}px - 38px)`;
-      shareBox.style.left = `calc(${rect.left}px + calc(${rect.width}px / 2) - 30px)`;
+      shareBox.style.top = `calc(${rect.top}px + 180px)`;
+      shareBox.style.left = `calc(${rect.left}px + calc(${rect.width}px / 2) )`;
+      
       var shareBtn = shareBox.querySelector('button');
       shareBtn['shareTxt'] = txt;
       shareBtn.addEventListener('mousedown', onShareClick, true);

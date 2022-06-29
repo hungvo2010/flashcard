@@ -1,0 +1,104 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+html {
+    height: 100%;
+    margin: 0px;
+}
+
+body {
+    background-image: url("./image/loginpage_background.png");
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.logo {
+    text-decoration: none;
+}
+
+h1 {
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    margin: 50px;
+    font-size: 60px;
+}
+
+h1 span {
+    color: #B3E5FC;
+}
+
+.login-panel {
+    border: 0px solid #fff;
+    border-radius: 30px !important;
+}
+
+.login-panel h2 {
+    color: #0288D1;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.login-panel .attention {
+    color: #03A9F4;
+    margin-bottom: 30px;
+}
+
+.login-panel form {
+    position: relative;
+}
+
+.login-panel form input {
+    padding-left: 50px !important;
+}
+
+.login-panel form .fa-envelope {
+    position: absolute;
+    top: 8px;
+    left: 20px;
+    color: #0288D1;
+    font-size: 22px;
+}
+.login-panel form #icon-pass1{
+    position: absolute;
+    top: 65px;
+    left: 20px;
+    color: #0288D1;
+    font-size: 22px;
+}
+.login-panel form #icon-pass2{
+    position: absolute;
+    top: 120px;
+    left: 20px;
+    color: #0288D1;
+    font-size: 22px;
+}
+
+.login-panel form #icon-pass3{
+    position: absolute;
+    top: 177px;
+    left: 20px;
+    color: #0288D1;
+    font-size: 22px;
+}
+
+.login-panel .form-control {
+    border: 2px solid #0288D1 !important;
+}
+
+.login-panel a {
+    color: #0288D1;
+}
+
+.login-panel .login-btn {
+    color: #fff;
+    background: #0288D1;
+    text-decoration: none;
+}
+
+.modal a {
+    text-decoration: none;
+}
