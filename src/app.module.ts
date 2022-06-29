@@ -2,8 +2,8 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { METHODS } from 'http';
 import { AppController, GreetingController } from './controller/app.controller';
 import { AppService, GreetingService } from './service/app.service';
-import { CardModule } from './database/card/card.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { CardModule } from './module/card.module';
 
 @Module({
   imports: [CardModule],
