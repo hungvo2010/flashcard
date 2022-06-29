@@ -1,10 +1,10 @@
 export class PostSigninDto {
-    username: String;
-    password: String;
+    email: string;
+    password: string;
 }
 
 export class PostSignupDto {
-    email: String;
-    fullname: String;
-    password: String;
+    email: string;
+    fullname: string;
+    password: string;
 }

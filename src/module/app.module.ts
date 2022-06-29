@@ -6,9 +6,13 @@ import { LoggerMiddleware } from '../middleware/logger.middleware';
 import { CardModule } from './card.module';
 import { AuthController } from 'src/controller/auth.controller';
 import { AuthService } from 'src/service/auth.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [CardModule],
+  imports: [CardModule, ConfigModule.forRoot({
+    envFilePath: 'conf/.development.env',
+    isGlobal: true
+  })],
   controllers: [AppController],
   providers: [AppService, GreetingService, AuthService],
 })
