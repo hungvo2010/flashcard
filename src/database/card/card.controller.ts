@@ -12,12 +12,12 @@ export class CardController {
     @Res() res: Response,
     @Next() next: NextFunction,
   ) {
-    let { text, meaning } = req.body;
-    let category = '';
-    if (req.body.category) {
-      category = req.body.category;
+    let { text, expand } = req.body;
+    let table = '';
+    if (req.body.table) {
+      table = req.body.table;
     }
-    let result = await this.cardService.create(text, meaning, category);
+    let result = await this.cardService.create(text, expand, table);
     if (result == 1) {
       res.status(200).json({
         status: 'Create new card succesfully',
@@ -56,22 +56,22 @@ export class CardController {
     });
   }
 
-  @Post(':id/updatemeaning')
+  @Post(':id/update')
   async updateNote(
     @Req() req: Request,
     @Res() res: Response,
     @Next() next: NextFunction,
   ) {
     let { id } = req.params;
-    let { meaning } = req.body;
-    let result = await this.cardService.updateMeaning(parseInt(id), meaning);
+    let { expand } = req.body;
+    let result = await this.cardService.update(id, req.body);
     if (result == 1) {
       res.status(200).json({
-        status: `Update note for card ${id} successfully`,
+        status: `Update expand for card ${id} successfully`,
       });
     } else {
       res.status(400).json({
-        status: `Update note for card ${id} failed`,
+        status: `Update expand for card ${id} failed`,
       });
     }
   }
@@ -86,11 +86,11 @@ export class CardController {
     let result = await this.cardService.delete(parseInt(id));
     if (result == 1) {
       res.status(200).json({
-        status: `Delete note for card ${id} successfully`,
+        status: `Delete expand for card ${id} successfully`,
       });
     } else {
       res.status(400).json({
-        status: `Delete note for card ${id} failed`,
+        status: `Delete expand for card ${id} failed`,
       });
     }
   }
