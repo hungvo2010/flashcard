@@ -1,25 +1,26 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
-import { METHODS } from 'http';
-import { AppController, GreetingController } from '../controller/app.controller';
-import { AppService, GreetingService } from '../service/app.service';
-import { LoggerMiddleware } from '../middleware/logger.middleware';
+import { AppController } from '../controller/app.controller';
+import { AppService } from '../service/app.service';
 import { CardModule } from './card.module';
 import { AuthController } from 'src/controller/auth.controller';
 import { AuthService } from 'src/service/auth.service';
 import { ConfigModule } from '@nestjs/config';
+import { AuthorizeMiddleware } from 'src/middleware/authorize.middleware';
+
 
 @Module({
   imports: [CardModule, ConfigModule.forRoot({
     envFilePath: 'conf/.development.env',
-    isGlobal: true
+    isGlobal: true,
+    ignoreEnvFile: true,
   })],
-  controllers: [AppController],
-  providers: [AppService, GreetingService, AuthService],
+  controllers: [AppController, AuthController],
+  providers: [AppService, AuthService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-      consumer
-      .apply(LoggerMiddleware)
-      .forRoutes({path: '/app', method: RequestMethod.GET});
+    consumer
+      .apply(AuthorizeMiddleware)
+      .forRoutes({ path: '/*', method: RequestMethod.ALL });
   }
 }

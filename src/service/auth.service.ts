@@ -13,6 +13,8 @@ import {
     CollectionReference,
 } from 'firebase/firestore';
 import { RCode } from "src/constant/RCode";
+import { sign } from "jsonwebtoken";
+import { Config } from "src/constant/Config";
 
 @Injectable()
 export class AuthService {
@@ -43,10 +45,19 @@ export class AuthService {
         }
 
         const checkPasswordRes: boolean = await compare(password, oldAccount.data().password);
-        if (checkPasswordRes === false){
+        if (checkPasswordRes === false) {
             return RCode.FAIL;
         }
         return RCode.SUCCESS;
+    }
+
+    genJwtToken(payload: object): string | PromiseLike<string> {
+        const dev = process.env.NODE_ENV !== 'production';
+        const JWT_SECRET = dev ? process.env.JWT_SECRET_DEV : process.env.JWT_SECRET_LIVE;
+        const token = sign(payload, JWT_SECRET, {
+            expiresIn: Config.JWT_EXPIRE_IN,
+        });
+        return token;
     }
 
 }

@@ -10,10 +10,3 @@ export class AppService {
        
   }
 }
-
-@Injectable()
-export class GreetingService {
-  readWriteFile(filePath: string): string {
-    return readFileSync(filePath).toString();
-  }
-}

@@ -1,5 +1,5 @@
-import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Post, Redirect, Render, Res } from "@nestjs/common";
-import { Response } from "express";
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Redirect, Render, Req, Res } from "@nestjs/common";
+import { Response, Request } from "express";
 import { RCode } from "src/constant/RCode";
 import { PostSigninDto, PostSignupDto } from "src/dto/post-auth.dto";
 import { AuthService } from "src/service/auth.service";
@@ -18,19 +18,21 @@ export class AuthController {
 
     @Post('/signin')
     @Redirect('/')
-    async doPostSignin(@Body() postSigninBody: PostSigninDto, @Res() res: Response) {
+    async doPostSignin(@Body() postSigninBody: PostSigninDto, @Req() req: Request, @Res() res: Response) {
         const { email, password }: { email: string, password: string } = postSigninBody;
         const signinRes: number = await this.authService.sigin(email, password);
         if (signinRes == RCode.FAIL) {
             throw new HttpException("Signin failed", HttpStatus.UNAUTHORIZED);
         }
-        const jwtToken = sign(email, process.env.JWT_SECRET_DEV, {
-            expiresIn: Config.JWT_EXPIRE_IN,
-        })
+        const jwtToken: string = await this.authService.genJwtToken({
+            email,
+        });
+        const cookieMaxAge: number = Config.JWT_COOKIE_MAX_AGE;
         res.setHeader("Authorization", "Bearer " + jwtToken);
         res.cookie("jwt", jwtToken, {
-            maxAge: 7200000,
+            maxAge: cookieMaxAge,
             httpOnly: true,
+            secure: req.secure || req.header('x-forwarded-proto') == 'https'
         });
     }
 

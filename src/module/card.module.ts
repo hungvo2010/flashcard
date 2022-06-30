@@ -1,8 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/common";
-import { GreetingController } from "src/controller/app.controller";
 import { AuthController } from "src/controller/auth.controller";
 import { CardController } from "src/controller/card.controller";
-import { LoggerMiddleware } from "src/middleware/logger.middleware";
+import { AuthorizeMiddleware } from "src/middleware/authorize.middleware";
 import { AuthService } from "src/service/auth.service";
 import { CardService } from "src/service/card.service";
 
@@ -14,7 +13,7 @@ import { CardService } from "src/service/card.service";
 export class CardModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
-            .apply(LoggerMiddleware)
-            .forRoutes({ path: '/app', method: RequestMethod.GET });
+            .apply(AuthorizeMiddleware)
+            .forRoutes({ path: '/*', method: RequestMethod.ALL });
     }
 }
