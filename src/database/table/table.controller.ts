@@ -12,7 +12,7 @@ export class TableController {
     @Res() res: Response,
     @Next() next: NextFunction,
   ) {
-    if (!req.body || !req.body.name) {
+    if (!req.body || !req.body.name || !req.body.userID) {
         res.status(400).json({
             status: "Create table failed",
             message: "Body data is invalid"

@@ -8,6 +8,8 @@ import {
   doc,
   deleteDoc,
   setDoc,
+  query,
+  where,
 } from 'firebase/firestore';
 
 @Injectable()
@@ -24,8 +26,7 @@ export class TableService {
     if (flag == 0) {
       body['size'] = 0;
       if (!body.isFavorite) body['isFavorite'] = false;
-      if (!body.description) body['description'] = "";
-      if (!body.userID) body['userID'] = '';
+      if (!body.description) body['description'] = '';
       await setDoc(doc(db, 'table', (tables.length + 1).toString()), body);
       return 1;
     } else {
@@ -77,12 +78,16 @@ export class TableService {
   }
 
   async delete(id: string) {
-    let ref = doc(db, "table", id);
+    let ref = doc(db, 'table', id);
     let data = await getDoc(ref);
     if (!data.exists) {
       return 0;
-    }
-    else {
+    } else {
+      let q = query(collection(db, 'card'), where('table', '==', data.id));
+      let cards = (await getDocs(q)).docs;
+      for (let i = 0; i < cards.length; i++) {
+        deleteDoc(doc(db, 'card', cards[i].id));
+      }
       await deleteDoc(ref);
       return 1;
     }

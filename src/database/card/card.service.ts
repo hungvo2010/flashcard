@@ -12,28 +12,26 @@ import {
 
 @Injectable()
 export class CardService {
-  async create(highlight: string, expand: string, table: string) {
+  async create(body) {
     let docs = await getDocs(collection(db, 'card'));
     let cards = docs.docs;
     let flag = 0;
     cards.forEach((ele) => {
-      if (ele.data().highlight === highlight) {
+      if (ele.data().highlight == body.highlight) {
         flag = 1;
       }
     });
 
     // Truong hop chua co highlight
     if (flag == 0) {
-      await setDoc(doc(db, 'card', (cards.length + 1).toString()), {
-        highlight,
-        expand,
-        table,
-      });
+      if (!body.table) body['table'] = '';
+      if (!body.isFavorite) body['isFavorite'] = false;
+      await setDoc(doc(db, 'card', (cards.length + 1).toString()), body);
 
-      if (table != '') {
-        let cate = doc(db, 'table', table);
-        let data = (await getDoc(cate)).data();
-        await updateDoc(cate, {
+      if (body.table != '') {
+        let updateTable = doc(db, 'table', body.table);
+        let data = (await getDoc(updateTable)).data();
+        await updateDoc(updateTable, {
           size: data.size + 1,
         });
       }
@@ -43,15 +41,20 @@ export class CardService {
     }
   }
   // Function get card take highlight highlight as input and return a list of document have highlight highlight equal to input
-  async get(id: number) {
-    let ref = doc(db, 'card', id.toString());
+  async get(id: string) {
+    let ref = doc(db, 'card', id);
     let data = await getDoc(ref);
-    let card = {};
-    card['id'] = data.id;
-    card['highlight'] = data.data().highlight;
-    card['expand'] = data.data().expand;
-    card['table'] = data.data().table;
-    return card;
+    if (data.exists()) {
+      let card = {};
+      card['id'] = data.id;
+      card['highlight'] = data.data().highlight;
+      card['expand'] = data.data().expand;
+      card['table'] = data.data().table;
+      card['isFavorite'] = data.data().isFavorite;
+      return card;
+    } else {
+      return null;
+    }
   }
   // Function getAll return all document of cards
   async getAll() {
@@ -64,17 +67,19 @@ export class CardService {
       card['highlight'] = ele.data().highlight;
       card['expand'] = ele.data().expand;
       card['table'] = ele.data().table;
+      card['isFavorite'] = ele.data().isFavorite;
       result.push(card);
     });
     return result;
   }
 
   async update(id: string, body) {
-    if (body == {}) {
+    let ref = doc(db, 'card', id);
+    let check = await getDoc(ref);
+    if (!check.exists()) {
       return 0;
     } else {
-      let ref = doc(db, 'card', id);
-      let card = (await getDoc(ref)).data();
+      let card = check.data();
       if (!body.table) {
         await updateDoc(ref, body);
         return 1;
@@ -86,10 +91,9 @@ export class CardService {
             size: data.size - 1,
           });
         }
-        let table = body.table;
         await updateDoc(ref, body);
 
-        let newTable = doc(db, 'table', table);
+        let newTable = doc(db, 'table', body.table);
         let data = (await getDoc(newTable)).data();
         await updateDoc(newTable, {
           size: data.size + 1,
@@ -99,9 +103,23 @@ export class CardService {
     }
   }
 
-  async delete(id: number) {
-    let ref = doc(db, 'card', id.toString());
-    await deleteDoc(ref);
-    return 1;
+  async delete(id: string) {
+    let ref = doc(db, 'card', id);
+
+    let check = await getDoc(ref);
+    if (!check.exists()) {
+      return 0;
+    } else {
+      let card = check.data();
+      if (card.table != '') {
+        let table = doc(db, 'table', card.table);
+        let data = (await getDoc(table)).data();
+        await updateDoc(table, {
+          size: data.size - 1,
+        });
+      }
+      await deleteDoc(ref);
+      return 1;
+    }
   }
 }

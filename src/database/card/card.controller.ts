@@ -1,4 +1,4 @@
-import { Controller, Get, Next, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Next, Post, Req, Res } from '@nestjs/common';
 import { CardService } from './card.service';
 import { Request, Response, NextFunction } from 'express';
 
@@ -12,20 +12,27 @@ export class CardController {
     @Res() res: Response,
     @Next() next: NextFunction,
   ) {
-    let { text, expand } = req.body;
-    let table = '';
-    if (req.body.table) {
-      table = req.body.table;
-    }
-    let result = await this.cardService.create(text, expand, table);
-    if (result == 1) {
-      res.status(200).json({
-        status: 'Create new card succesfully',
+    if (
+      !req.body ||
+      !req.body.highlight ||
+      !req.body.expand ||
+      !req.body.userID
+    ) {
+      res.status(400).json({
+        status: 'Create card failed',
+        message: 'Body data is invalid',
       });
     } else {
-      res.status(400).json({
-        status: 'Create new card failed',
-      });
+      let result = await this.cardService.create(req.body);
+      if (result == 1) {
+        res.status(200).json({
+          status: 'Create new card succesfully',
+        });
+      } else {
+        res.status(400).json({
+          status: 'Create new card failed',
+        });
+      }
     }
   }
 
@@ -38,6 +45,7 @@ export class CardController {
     let result = await this.cardService.getAll();
     res.status(200).json({
       status: 'Get all cards succesfully',
+      size: result.length,
       cards: result,
     });
   }
@@ -49,11 +57,17 @@ export class CardController {
     @Next() next: NextFunction,
   ) {
     let { id } = req.params;
-    let card = await this.cardService.get(parseInt(id));
-    res.status(200).json({
-      status: `Get a Card with id = ${id} successfully`,
-      card,
-    });
+    let card = await this.cardService.get(id);
+    if (card != null) {
+      res.status(200).json({
+        status: `Get a Card with id = ${id} successfully`,
+        card,
+      });
+    } else {
+      res.status(400).json({
+        status: `Get a Card with id = ${id} failed`,
+      });
+    }
   }
 
   @Post(':id/update')
@@ -83,7 +97,7 @@ export class CardController {
     @Next() next: NextFunction,
   ) {
     let { id } = req.params;
-    let result = await this.cardService.delete(parseInt(id));
+    let result = await this.cardService.delete(id);
     if (result == 1) {
       res.status(200).json({
         status: `Delete expand for card ${id} successfully`,
