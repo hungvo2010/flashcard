@@ -13,7 +13,6 @@ import { TableModule } from './table.module';
   imports: [CardModule, TableModule, ConfigModule.forRoot({
     envFilePath: 'conf/.development.env',
     isGlobal: true,
-    ignoreEnvFile: true,
   })],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],
