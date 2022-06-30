@@ -6,11 +6,16 @@ import { AuthController } from 'src/controller/auth.controller';
 import { AuthService } from 'src/service/auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { AuthorizeMiddleware } from 'src/middleware/authorize.middleware';
+import { join } from 'path';
+
+// process.env.PORT = "4000";
+
+console.log(join(__dirname, '.development.env'));
 
 
 @Module({
   imports: [CardModule, ConfigModule.forRoot({
-    envFilePath: 'conf/.development.env',
+    envFilePath: join(__dirname, '.development.env'),
     isGlobal: true,
   })],
   controllers: [AppController, AuthController],
