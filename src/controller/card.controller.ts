@@ -1,58 +1,111 @@
-import { Body, Controller, Get, HttpCode, HttpException, HttpStatus, Next, Param, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Next, Post, Req, Res } from '@nestjs/common';
 import { CardService } from '../service/card.service';
 import { Request, Response, NextFunction } from 'express';
-import { CartDto } from 'src/dto/card.dto';
 
 @Controller('cards')
 export class CardController {
-  constructor(private readonly cardService: CardService) { }
+  constructor(private cardService: CardService) {}
 
   @Post('create')
-  @HttpCode(201)
-  async create(@Body() cardBody: CartDto, @Res() res: Response) {
-    let result = await this.cardService.create(cardBody.highlight, cardBody.expand, cardBody.table);
+  async create(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ) {
+    if (
+      !req.body ||
+      !req.body.highlight ||
+      !req.body.expand ||
+      !req.body.userID
+    ) {
+      res.status(400).json({
+        status: 'Create card failed',
+        message: 'Body data is invalid',
+      });
+    } else {
+      let result = await this.cardService.create(req.body);
+      if (result == 1) {
+        res.status(200).json({
+          status: 'Create new card succesfully',
+        });
+      } else {
+        res.status(400).json({
+          status: 'Create new card failed',
+        });
+      }
+    }
+  }
+
+  @Get('')
+  async getAll(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ) {
+    let result = await this.cardService.getAll();
+    res.status(200).json({
+      status: 'Get all cards succesfully',
+      size: result.length,
+      cards: result,
+    });
+  }
+
+  @Get(':id')
+  async getById(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ) {
+    let { id } = req.params;
+    let card = await this.cardService.get(id);
+    if (card != null) {
+      res.status(200).json({
+        status: `Get a Card with id = ${id} successfully`,
+        card,
+      });
+    } else {
+      res.status(400).json({
+        status: `Get a Card with id = ${id} failed`,
+      });
+    }
+  }
+
+  @Post(':id/update')
+  async updateNote(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Next() next: NextFunction,
+  ) {
+    let { id } = req.params;
+    let { expand } = req.body;
+    let result = await this.cardService.update(id, req.body);
     if (result == 1) {
-      return 'Create new card succesfully';
+      res.status(200).json({
+        status: `Update expand for card ${id} successfully`,
+      });
+    } else {
+      res.status(400).json({
+        status: `Update expand for card ${id} failed`,
+      });
     }
-    else {
-      throw new HttpException("Create new card failed", HttpStatus.BAD_REQUEST);
-    }
   }
 
-  @Get('all')
-  async getAll() {
-    let cards = await this.cardService.all();
-    return cards;
-  }
-
-  @Get(':cardId')
-  async getOne(@Param() params) {
-    let cartId: string = params.cardId;
-    let card = await this.cardService.get(parseInt(cartId));
-    return card;
-  }
-
-  @Post('update/:cardId')
-  @HttpCode(204)
-  async updateCard(
-    @Body() cardBody: CartDto,
-    @Param() params,
-  ) {
-    let cardId: string = params.cardIds;
-    let result = await this.cardService.update(parseInt(cardId), cardBody.highlight, cardBody.expand, cardBody.table);
-    if (result != 1) {
-      throw new HttpException(`Update note for card ${cardId} failed`, HttpStatus.BAD_REQUEST);
-    };
-  }
-
-  @Post('delete/:cardId')
+  @Post(':id/delete')
   async deleteCard(
-    @Param() params,
+    @Req() req: Request,
+    @Res() res: Response,
+    @Next() next: NextFunction,
   ) {
-    let cardId: string = params.cardId;
-    let result = await this.cardService.delete(parseInt(cardId));
-    if (result != 1) {
-      throw new HttpException(`Delete note for card ${cardId} failed`, HttpStatus.BAD_REQUEST);
+    let { id } = req.params;
+    let result = await this.cardService.delete(id);
+    if (result == 1) {
+      res.status(200).json({
+        status: `Delete expand for card ${id} successfully`,
+      });
+    } else {
+      res.status(400).json({
+        status: `Delete expand for card ${id} failed`,
+      });
     }
   }
 }
