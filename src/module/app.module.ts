@@ -12,7 +12,6 @@ import { AuthorizeMiddleware } from 'src/middleware/authorize.middleware';
   imports: [CardModule, ConfigModule.forRoot({
     envFilePath: 'conf/.development.env',
     isGlobal: true,
-    ignoreEnvFile: true,
   })],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],
