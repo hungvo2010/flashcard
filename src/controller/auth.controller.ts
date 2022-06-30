@@ -3,7 +3,6 @@ import { Response, Request } from "express";
 import { RCode } from "src/constant/RCode";
 import { PostSigninDto, PostSignupDto } from "src/dto/post-auth.dto";
 import { AuthService } from "src/service/auth.service";
-import { sign, verify } from "jsonwebtoken";
 import { Config } from "src/constant/Config";
 
 @Controller()

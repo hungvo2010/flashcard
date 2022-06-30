@@ -11,7 +11,7 @@ import { TableModule } from './table.module';
 
 @Module({
   imports: [CardModule, TableModule, ConfigModule.forRoot({
-    envFilePath: 'conf/.development.env',
+    envFilePath: '.development.env',
     isGlobal: true,
   })],
   controllers: [AppController, AuthController],
