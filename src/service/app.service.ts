@@ -4,7 +4,7 @@ import { Request } from 'express';
 @Injectable()
 export class AppService {
   getHello(@Req() req: Request): string {
-    console.log(req.body); 
+    // console.log(req.body); 
     return 'Hello World!';
        
   }
