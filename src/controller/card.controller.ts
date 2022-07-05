@@ -1,36 +1,39 @@
 import { Body, Controller, Get, Next, Post, Render, Req, Res } from '@nestjs/common';
 import { CardService } from '../service/card.service';
 import { Request, Response, NextFunction } from 'express';
+import { CartDto } from 'src/dto/card.dto';
+import { RCode } from 'src/constant/RCode';
 
 @Controller('cards')
 export class CardController {
-  constructor(private cardService: CardService) {}
+  constructor(private cardService: CardService) { }
 
   @Post('create')
   async create(
     @Req() req: Request,
+    @Body() cardBody: CartDto,
     @Res() res: Response,
-    @Next() next: NextFunction,
+    // @Next() next: NextFunction,
   ) {
-    if (
-      !req.body ||
-      !req.body.highlight ||
-      !req.body.expand ||
-      !req.body.userID
-    ) {
+    if (!cardBody || !cardBody.highlight || !cardBody.expand || !cardBody.table) {
       res.status(400).json({
         status: 'Create card failed',
-        message: 'Body data is invalid',
+        // message: 'Body data is invalid',
       });
     } else {
-      let result = await this.cardService.create(req.body);
-      if (result == 1) {
+      let result = await this.cardService.create(cardBody);
+      if (result === RCode.SUCCESS) {
         res.status(200).json({
           status: 'Create new card succesfully',
         });
-      } else {
+      } else if (result === RCode.FAIL) {
         res.status(400).json({
           status: 'Create new card failed',
+        });
+      }
+      else {
+        res.status(400).json({
+          status: 'Create new card which already existed.',
         });
       }
     }
@@ -111,5 +114,5 @@ export class CardController {
 
   @Get('')
   @Render('index')
-  getHomepageView(@Res() res: Response) {}
+  getHomepageView(@Res() res: Response) { }
 }

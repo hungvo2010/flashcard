@@ -8,38 +8,41 @@ import {
   doc,
   deleteDoc,
   setDoc,
+  query,
+  where,
 } from 'firebase/firestore';
+import { CartDto } from 'src/dto/card.dto';
+import { RCode } from 'src/constant/RCode';
+import { v4 as uuid } from 'uuid'
 
 @Injectable()
 export class CardService {
-  async create(body) {
-    let docs = await getDocs(collection(db, 'card'));
-    let cards = docs.docs;
-    let flag = 0;
-    cards.forEach((ele) => {
-      if (ele.data().highlight == body.highlight) {
-        flag = 1;
-      }
-    });
+  private readonly CARD_COLLECTION_NAME: string = 'card';
+  private readonly cardCollection = collection(db, this.CARD_COLLECTION_NAME);
+  async create(cardBody: CartDto) {
+    try {
+      let cardQuery = query(this.cardCollection, where("highlight", "==", cardBody.highlight));
+      let cards = (await getDocs(cardQuery)).docs;
 
-    // Truong hop chua co highlight
-    if (flag == 0) {
-      if (!body.table) body['table'] = '';
-      if (!body.isFavorite) body['isFavorite'] = false;
-      await setDoc(doc(db, 'card', (cards.length + 1).toString()), body);
-
-      if (body.table != '') {
-        let updateTable = doc(db, 'table', body.table);
-        let data = (await getDoc(updateTable)).data();
-        await updateDoc(updateTable, {
-          size: data.size + 1,
-        });
+      if (cards.length !== 0) {
+        return RCode.CARD_ALREADY_EXISTS;
       }
-      return 1;
-    } else {
-      return 0;
+
+      await setDoc(doc(db, this.CARD_COLLECTION_NAME, uuid()), cardBody);
+
+      let tableQuery = query(collection(db, 'table'), where("name", "==", cardBody.table));
+      let updateTable = (await getDocs(tableQuery)).docs[0];
+      await updateDoc(updateTable, {
+        size: updateTable["size"] + 1,
+      });
+      return RCode.SUCCESS;
+    }
+    catch (err) {
+      console.log(err);
+      return RCode.FAIL;
     }
   }
+  
   // Function get card take highlight highlight as input and return a list of document have highlight highlight equal to input
   async get(id: string) {
     let ref = doc(db, 'card', id);

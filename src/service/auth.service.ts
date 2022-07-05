@@ -20,22 +20,22 @@ import { Config } from "src/constant/Config";
 
 @Injectable()
 export class AuthService {
-    private readonly ACCOUNT_COLLECTION_NAME: string = 'accounts';
-    private readonly accountCollection = collection(db, this.ACCOUNT_COLLECTION_NAME);
+    private readonly USER_COLLECTION_NAME: string = 'user';
+    private readonly userCollection = collection(db, this.USER_COLLECTION_NAME);
     async signup(email: string, fullname: string, password: string) {
         // const accountRf = doc(db, this.ACCOUNT_COLLECTION_NAME);
         // console.log(arguments);
         
-        const accountQuery = query(this.accountCollection, where('email', '==', email));
-        let oldAccount = (await getDocs(accountQuery)).docs;
+        const userQuery = query(this.userCollection, where('email', '==', email));
+        let oldUser = (await getDocs(userQuery)).docs;
         
-        if (oldAccount.length !== 0) {
+        if (oldUser.length !== 0) {
             return RCode.FAIL;
         }
 
-        const newAccount = doc(db, this.ACCOUNT_COLLECTION_NAME, uuid());
+        const newUser = doc(db, this.USER_COLLECTION_NAME, uuid());
         const hashedPassword = await hash(password, 12);
-        const signupAccountRes = await setDoc(newAccount, {
+        const signupUserRes = await setDoc(newUser, {
             email,
             fullname: fullname || "Vo Chanh Hung",
             password: hashedPassword
@@ -44,17 +44,17 @@ export class AuthService {
     }
 
     async signin(email: string, password: string) {
-        const accountQuery = query(this.accountCollection, where('email', '==', email));
-        let accounts = (await getDocs(accountQuery)).docs;
+        const userQuery = query(this.userCollection, where('email', '==', email));
+        let users = (await getDocs(userQuery)).docs;
 
         // console.log(oldAccount[0].data().password);
 
 
-        if (accounts.length == 0) {
+        if (users.length == 0) {
             return RCode.FAIL;
         }
 
-        const checkPasswordRes: boolean = await compare(password, accounts[0].data().password);
+        const checkPasswordRes: boolean = await compare(password, users[0].data().password);
         if (checkPasswordRes === false) {
             return RCode.FAIL;
         }

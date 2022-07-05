@@ -7,6 +7,8 @@ import { Config } from 'src/constant/Config';
 export class AuthorizeMiddleware implements NestMiddleware {
     private readonly dev: boolean = process.env.NODE_ENV !== 'production';
     use(req: Request, res: Response, next: NextFunction) {
+        // console.log(req.body);
+        
         let jwtToken: string;
         if (req.header['Authorization'] && req.header['Authorization'].startsWith('Bearer')) {
             jwtToken = req.header['Authorization'].split(' ')[1];
