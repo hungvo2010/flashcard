@@ -18,12 +18,12 @@ import { Config } from "src/constant/Config";
 
 @Injectable()
 export class AuthService {
-    private readonly ACCOUNT_COLLECTION_NAME: string = 'user';
+    private readonly ACCOUNT_COLLECTION_NAME: string = 'accounts';
     private readonly accountCollection = collection(db, this.ACCOUNT_COLLECTION_NAME);
     async signup(email: string, fullname: string, password: string) {
-        const accountRf = doc(db, this.ACCOUNT_COLLECTION_NAME, email);
+        const accountRf = doc(db, this.ACCOUNT_COLLECTION_NAME);
         let oldAccount = await getDoc(accountRf);
-        if (oldAccount.exists) {
+        if (oldAccount.exists()) {
             return RCode.FAIL;
         }
 
@@ -31,16 +31,20 @@ export class AuthService {
         const hashedPassword = await hash(password, 12);
         const signupAccountRes = await setDoc(newAccount, {
             email,
-            fullname,
+            fullname: "142",
             password: hashedPassword
         });
         return RCode.SUCCESS;
     }
 
-    async sigin(email: string, password: string) {
+    async signin(email: string, password: string) {
         const accountRf = doc(db, this.ACCOUNT_COLLECTION_NAME, email);
         const oldAccount = await getDoc(accountRf);
-        if (!oldAccount.exists) {
+
+        console.log(oldAccount.data().password);
+        
+        
+        if (!oldAccount.exists()) {
             return RCode.FAIL;
         }
 

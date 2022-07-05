@@ -1,5 +1,4 @@
 import { Injectable, Req } from '@nestjs/common';
-import { readFileSync } from 'fs';
 import { Request } from 'express';
 
 @Injectable()

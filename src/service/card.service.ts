@@ -12,28 +12,26 @@ import {
 
 @Injectable()
 export class CardService {
-  async create(text: string, meaning: string, category: string) {
+  async create(body) {
     let docs = await getDocs(collection(db, 'card'));
     let cards = docs.docs;
     let flag = 0;
     cards.forEach((ele) => {
-      if (ele.data().text === text) {
+      if (ele.data().highlight == body.highlight) {
         flag = 1;
       }
     });
 
-    // Truong hop chua co text
+    // Truong hop chua co highlight
     if (flag == 0) {
-      await setDoc(doc(db, 'card', (cards.length + 1).toString()), {
-        text,
-        meaning,
-        category,
-      });
+      if (!body.table) body['table'] = '';
+      if (!body.isFavorite) body['isFavorite'] = false;
+      await setDoc(doc(db, 'card', (cards.length + 1).toString()), body);
 
-      if (category != '') {
-        let cate = doc(db, 'category', category);
-        let data = (await getDoc(cate)).data();
-        await updateDoc(cate, {
+      if (body.table != '') {
+        let updateTable = doc(db, 'table', body.table);
+        let data = (await getDoc(updateTable)).data();
+        await updateDoc(updateTable, {
           size: data.size + 1,
         });
       }
@@ -42,70 +40,86 @@ export class CardService {
       return 0;
     }
   }
-  // Function get card take highlight text as input and return a list of document have highlight text equal to input
-  async get(id: number) {
-    let ref = doc(db, 'card', id.toString());
+  // Function get card take highlight highlight as input and return a list of document have highlight highlight equal to input
+  async get(id: string) {
+    let ref = doc(db, 'card', id);
     let data = await getDoc(ref);
-    let card = {};
-    card['id'] = data.id;
-    card['text'] = data.data().text;
-    card['meaning'] = data.data().meaning;
-    card['category'] = data.data().category;
-    console.log(card);
-    return card;
+    if (data.exists()) {
+      let card = {};
+      card['id'] = data.id;
+      card['highlight'] = data.data().highlight;
+      card['expand'] = data.data().expand;
+      card['table'] = data.data().table;
+      card['isFavorite'] = data.data().isFavorite;
+      return card;
+    } else {
+      return null;
+    }
   }
   // Function getAll return all document of cards
-  async all() {
+  async getAll() {
     let doc = await getDocs(collection(db, 'card'));
     let list = doc.docs;
     let result = [];
     list.forEach((ele) => {
       let card = {};
       card['id'] = ele.id;
-      card['text'] = ele.data().text;
-      card['meaning'] = ele.data().meaning;
-      card['category'] = ele.data().category;
+      card['highlight'] = ele.data().highlight;
+      card['expand'] = ele.data().expand;
+      card['table'] = ele.data().table;
+      card['isFavorite'] = ele.data().isFavorite;
       result.push(card);
     });
     return result;
   }
 
-  async update(id: number, newHighlight: string, newExpand: string, newTable: string) {
-    let ref = doc(db, 'card', id.toString());
-    await updateDoc(ref, {
-      highlight: newHighlight,
-      expand: newExpand,
-      table: newTable,
-    });
-    return 1;
-  }
+  async update(id: string, body) {
+    let ref = doc(db, 'card', id);
+    let check = await getDoc(ref);
+    if (!check.exists()) {
+      return 0;
+    } else {
+      let card = check.data();
+      if (!body.table) {
+        await updateDoc(ref, body);
+        return 1;
+      } else {
+        if (card.table != '') {
+          let oldTable = doc(db, 'table', card.table);
+          let data = (await getDoc(oldTable)).data();
+          await updateDoc(oldTable, {
+            size: data.size - 1,
+          });
+        }
+        await updateDoc(ref, body);
 
-  async updateCategory(id: number, newCategory: string) {
-    let ref = doc(db, 'card', id.toString());
-    let card = (await getDoc(ref)).data();
-    if (card.category != '') {
-      let oldCate = doc(db, 'category', card.category);
-      let data = await getDoc(oldCate);
-      let temp = data.data();
-      await updateDoc(oldCate, {
-        size: temp.size - 1,
-      });
+        let newTable = doc(db, 'table', body.table);
+        let data = (await getDoc(newTable)).data();
+        await updateDoc(newTable, {
+          size: data.size + 1,
+        });
+        return 1;
+      }
     }
-
-    await updateDoc(ref, {
-      category: newCategory,
-    });
-
-    let newCate = doc(db, 'category', newCategory);
-    let data = (await getDoc(newCate)).data();
-    await updateDoc(newCate, {
-      size: data.size + 1,
-    });
   }
 
-  async delete(id: number) {
-    let ref = doc(db, 'card', id.toString());
-    await deleteDoc(ref);
-    return 1;
+  async delete(id: string) {
+    let ref = doc(db, 'card', id);
+
+    let check = await getDoc(ref);
+    if (!check.exists()) {
+      return 0;
+    } else {
+      let card = check.data();
+      if (card.table != '') {
+        let table = doc(db, 'table', card.table);
+        let data = (await getDoc(table)).data();
+        await updateDoc(table, {
+          size: data.size - 1,
+        });
+      }
+      await deleteDoc(ref);
+      return 1;
+    }
   }
 }

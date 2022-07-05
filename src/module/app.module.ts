@@ -6,13 +6,13 @@ import { AuthController } from 'src/controller/auth.controller';
 import { AuthService } from 'src/service/auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { AuthorizeMiddleware } from 'src/middleware/authorize.middleware';
+import { TableModule } from './table.module';
 
 
 @Module({
-  imports: [CardModule, ConfigModule.forRoot({
+  imports: [CardModule, TableModule, ConfigModule.forRoot({
     envFilePath: 'conf/.development.env',
     isGlobal: true,
-    ignoreEnvFile: true,
   })],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],

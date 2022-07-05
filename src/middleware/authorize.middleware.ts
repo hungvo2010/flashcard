@@ -11,7 +11,9 @@ export class AuthorizeMiddleware implements NestMiddleware {
             jwtToken = req.header['Authorization'].split(' ')[1];
         }
 
-        jwtToken = jwtToken || req.cookies.jwt;
+        if (!jwtToken && req.cookies && req.cookies.jwt) {
+            jwtToken = req.cookies.jwt;
+        }
         if (!jwtToken) {
             return next();
         }
