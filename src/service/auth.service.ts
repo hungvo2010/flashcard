@@ -19,7 +19,6 @@ import { Config } from "src/constant/Config";
 @Injectable()
 export class AuthService {
     private readonly ACCOUNT_COLLECTION_NAME: string = 'user';
-    private readonly accountCollection = collection(db, this.ACCOUNT_COLLECTION_NAME);
     async signup(email: string, fullname: string, password: string) {
         const accountRf = doc(db, this.ACCOUNT_COLLECTION_NAME, email);
         let oldAccount = await getDoc(accountRf);
