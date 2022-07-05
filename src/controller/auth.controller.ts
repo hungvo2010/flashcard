@@ -19,7 +19,7 @@ export class AuthController {
     @Redirect('/')
     async doPostSignin(@Body() postSigninBody: PostSigninDto, @Req() req: Request, @Res() res: Response) {
         const { email, password }: { email: string, password: string } = postSigninBody;
-        const signinRes: number = await this.authService.sigin(email, password);
+        const signinRes: number = await this.authService.signin(email, password);
         if (signinRes == RCode.FAIL) {
             throw new HttpException("Signin failed", HttpStatus.UNAUTHORIZED);
         }
