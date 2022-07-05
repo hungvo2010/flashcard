@@ -1,4 +1,3 @@
-
 header{
     background-color: #0288D1;
 }
@@ -154,6 +153,7 @@ button:hover{
   height: 30px;
   position: absolute;
 }
+
 #shareBox > button {
   width: 100%;
   height: 100%;
@@ -165,8 +165,9 @@ button:hover{
   background-image: url("https://raw.githubusercontent.com/hongkiat/selected-text-action-menu/gh-pages/twitter.png");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 70%;
+  background-size: 70%
 }
+
 #shareBox > button::after {
 position: absolute;
 content: '';
