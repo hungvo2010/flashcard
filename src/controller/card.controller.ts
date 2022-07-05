@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Next, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Next, Post, Render, Req, Res } from '@nestjs/common';
 import { CardService } from '../service/card.service';
 import { Request, Response, NextFunction } from 'express';
 
@@ -36,7 +36,7 @@ export class CardController {
     }
   }
 
-  @Get('')
+  @Post('')
   async getAll(
     @Req() req: Request,
     @Res() res: Response,
@@ -50,7 +50,7 @@ export class CardController {
     });
   }
 
-  @Get(':id')
+  @Post(':id')
   async getById(
     @Req() req: Request,
     @Res() res: Response,
@@ -108,4 +108,8 @@ export class CardController {
       });
     }
   }
+
+  @Get('')
+  @Render('index')
+  getHomepageView(@Res() res: Response) {}
 }
