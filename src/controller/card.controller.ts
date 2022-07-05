@@ -109,7 +109,7 @@ export class CardController {
     }
   }
 
-  @Get('home')
+  @Get('')
   @Render('index')
   getHomepageView(@Res() res: Response) {}
 }
