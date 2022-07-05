@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { collection, CollectionReference, DocumentData, getFirestore } from "firebase/firestore";
 
+// console.log(process.env.FIREBASE_AUTH_DOMAIN);
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBWDFg-n6ru7gjv6Y-IY-YNAx5e74Cs__c",

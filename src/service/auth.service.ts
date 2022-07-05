@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { db } from '../database/firebase.config';
 import { compare, hash } from 'bcryptjs';
-import { v4 as uuid } from 'uuid'
+import { v4 as uuid } from 'uuid';
 import {
     collection,
     getDoc,
