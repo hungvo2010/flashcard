@@ -42,12 +42,23 @@ export class CardController {
     @Res() res: Response,
     @Next() next: NextFunction,
   ) {
-    let result = await this.cardService.getAll();
-    res.status(200).json({
-      status: 'Get all cards succesfully',
-      size: result.length,
-      cards: result,
-    });
+    let {userID} = req.body;
+    if(!userID) {
+      res.status(200).json({
+        status: "Get cards with given userID failed",
+        result: "failed"
+      });
+    } 
+    else {
+      let result = await this.cardService.getAll(userID);
+      res.status(200).json({
+        status: 'Get all cards with userID succesfully',
+        size: result.length,
+        cards: result,
+        result: "success"
+      });
+    }
+    
   }
 
   @Post(':id')
