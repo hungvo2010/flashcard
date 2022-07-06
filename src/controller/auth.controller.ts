@@ -10,17 +10,6 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {
     }
 
-    @Get('')
-    redirect(req: Request, res: Response) {
-        if (!req.cookies.jwt) {
-            res.redirect('/signin');
-        }
-        else {
-            res.redirect('/home');
-        }
-    }
-
-
     @Get('/signin')
     // @Render('signin')
     doGetSignin(@Res() res: Response) {

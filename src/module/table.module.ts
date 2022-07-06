@@ -9,14 +9,14 @@ import { TableService } from "src/service/table.service";
 
 @Module({
     imports: [],
-    controllers: [TableController, AuthController],
-    providers: [TableService, AuthService],
+    controllers: [TableController],
+    providers: [TableService],
     exports: [TableService]
 })
 export class TableModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(AuthorizeMiddleware)
-            .forRoutes(CardController, TableController, AppController);
+            .forRoutes(TableController);
     }
 }

@@ -104,25 +104,25 @@ export class AppController {
 
 
 
-  @Post('/upload')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: function (req, file, cb) {
-          cb(null, `${file.originalname}`);
-        },
-      })
-    }))
-  uploadFile(@UploadedFile() file) {
-    const response = `http://localhost:3000/${file.filename}`
-    return response
+  // @Post('/upload')
+  // @UseInterceptors(
+  //   FileInterceptor('file', {
+  //     storage: diskStorage({
+  //       destination: './uploads',
+  //       filename: function (req, file, cb) {
+  //         cb(null, `${file.originalname}`);
+  //       },
+  //     })
+  //   }))
+  // uploadFile(@UploadedFile() file) {
+  //   const response = `http://localhost:3000/${file.filename}`
+  //   return response
 
-  }
+  // }
 
 
-  @Get(':imgpath')
-  seeUploadedFile(@Param('imgpath') image: string, @Res() res: Response) {
-    return res.sendFile(image, { root: './uploads' });
-  }
+  // @Get(':imgpath')
+  // seeUploadedFile(@Param('imgpath') image: string, @Res() res: Response) {
+  //   return res.sendFile(image, { root: './uploads' });
+  // }
 }

@@ -7,7 +7,7 @@ import { Config } from 'src/constant/Config';
 export class AuthorizeMiddleware implements NestMiddleware {
     private readonly dev: boolean = process.env.NODE_ENV !== 'production';
     use(req: Request, res: Response, next: NextFunction) {
-        // console.log(req.body);
+        // console.log(req);
         
         let jwtToken: string;
         if (req.header['Authorization'] && req.header['Authorization'].startsWith('Bearer')) {
@@ -20,10 +20,10 @@ export class AuthorizeMiddleware implements NestMiddleware {
         if (!jwtToken && req.cookies && req.cookies.jwt) {
             jwtToken = req.cookies.jwt;
         }
-        console.log(jwtToken);
 
         if (!jwtToken) {
             // console.log("here");
+            // return next();
             return res.redirect('/signin');
         }
 

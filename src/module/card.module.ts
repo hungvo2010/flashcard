@@ -16,6 +16,6 @@ export class CardModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(AuthorizeMiddleware)
-            .forRoutes(CardController, TableController, AppController);
+            .forRoutes(CardController);
     }
 }

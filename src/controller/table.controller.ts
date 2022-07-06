@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { doc, getDoc } from 'firebase/firestore';
 import { TableService } from '../service/table.service';
 
-@Controller('tables')
+@Controller()
 export class TableController {
   constructor(private tableService: TableService) { }
 
