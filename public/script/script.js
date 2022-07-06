@@ -29,7 +29,35 @@ iframe.onload = function () {
   temp = document.querySelector('#shareBoxTemplate');
 }
 
+function upload(){
+  let fileElement = document.getElementById('fileInput')
 
+      // check if user had selected a file
+      if (fileElement.files.length === 0) {
+        alert('please choose a file')
+        return
+      }
+
+      let file = fileElement.files[0]
+      console.log(file)
+      // let formData = new FormData();
+      // formData.set('file', file);
+      // axios.post("/upload", formData, {
+      //   onUploadProgress: progressEvent => {
+      //     const percentCompleted = Math.round(
+      //       (progressEvent.loaded * 100) / progressEvent.total
+      //     );
+      //     console.log(`upload process: ${percentCompleted}%`);
+      //   }
+      // })
+      //   .then(res => {
+      //     console.log(res.data)
+      //     console.log(res.data.url)
+      //   })
+    }
+
+
+    
 // iframe.addEventListener('load', function() {
 //   // Deliver the port to the iframe and initialize
 //   iframe.contentWindow.document.addEventListener('mouseup', Handler);
