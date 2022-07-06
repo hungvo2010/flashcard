@@ -51,14 +51,14 @@ export class AuthService {
 
 
         if (users.length == 0) {
-            return null;
+            return RCode.FAIL;
         }
 
         const checkPasswordRes: boolean = await compare(password, users[0].data().password);
         if (checkPasswordRes === false) {
-            return null;
+            return RCode.FAIL;
         }
-        return users[0].data();
+        return RCode.SUCCESS;
     }
 
     genJwtToken(payload: object): string | PromiseLike<string> {

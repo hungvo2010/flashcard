@@ -5,12 +5,11 @@ import { CardModule } from './card.module';
 import { AuthorizeMiddleware } from 'src/middleware/authorize.middleware';
 import { TableModule } from './table.module';
 import { AuthModule } from './auth.module';
-import { TableService } from 'src/service/table.service';
 
 @Module({
-  imports: [AuthModule, CardModule, TableModule],
+  imports: [CardModule],
   controllers: [AppController],
-  providers: [AppService, TableService],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

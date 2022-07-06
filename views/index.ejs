@@ -64,11 +64,9 @@
             name="address">
         </div>
         <button type="submit" form="formRedirectUrl" class="col-sm-2 btn btn-primary">Chuyển hướng</button>
+
       </form>
-
-      <br></br>
-      
-
+      <!-- <button type="submit" form="formRedirectUrl" class="col-sm-2 btn btn-primary" onclick="addressIP()">Chuyển hướng</button> -->
 
 
       <!-- <button type="submit" form="formRedirectUrl" class="col-sm-2 btn btn-primary" onclick="addressIP()">Chuyển hướng</button> -->
@@ -77,7 +75,7 @@
         <label for="fileInput" class="col-sm-2 col-form-label">Đọc PDF </label>
         <input type="file" id="fileInput" class="col-6">
         <button class="col-sm-2 btn btn-primary" onclick="upload()">Upload</button>
-    </div>
+      </div>
     </div>
     <section class="row mt-5" style="height: 75vh;">
       <section class="col-lg-9 col-sm-12">
@@ -87,7 +85,6 @@
           class="border border-dark border-4"></iframe> -->
 
         <iframe srcdoc="<%= embedContent %>" id="iframe" width="100%" height="700px"
-
           class="border border-dark border-4"></iframe>
       </section>
 
@@ -109,7 +106,7 @@
               <!-- <br> -->
               <textarea id="expand" name="expand"></textarea>
               <label for="table" class="my-1">Table</label>
-              <select name="table" id="table" class="mb-4 py-3" >
+              <select name="table" id="table" class="mb-4 py-3">
                 <option selected value="default">Default</option>
                 <% for (let table of tables) { %>
                   <option value="<%= table %>">
@@ -140,7 +137,7 @@
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
     crossorigin="anonymous"></script>
   <script src="script/script.js"></script>
-  
+
 
 </body>
 

@@ -10,8 +10,6 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {
     }
 
-<<<<<<< HEAD
-=======
     @Get('')
     redirect(req: Request, res: Response) {
         if (!req.cookies.jwt) {
@@ -22,7 +20,6 @@ export class AuthController {
         }
     }
 
->>>>>>> parent of 9dae8ca... refactor project, auth controller
     
     @Get('/signin')
     // @Render('signin')
@@ -36,13 +33,15 @@ export class AuthController {
     @Redirect('/')
     async doPostSignin(@Body() postSigninBody: PostSigninDto, @Req() req: Request, @Res() res: Response) {
         const { email, password }: { email: string, password: string } = postSigninBody;
-        const signinRes: object = await this.authService.signin(email, password);
+        const signinRes: number = await this.authService.signin(email, password);
         // console.log(signinRes);
         
-        if (signinRes == null) {
+        if (signinRes == RCode.FAIL) {
             throw new HttpException("Signin failed", HttpStatus.UNAUTHORIZED);
         }
-        const jwtToken: string = await this.authService.genJwtToken(signinRes);
+        const jwtToken: string = await this.authService.genJwtToken({
+            email,
+        });
         const cookieMaxAge: number = Config.JWT_COOKIE_MAX_AGE;
         res.setHeader("Authorization", "Bearer " + jwtToken);
         res.cookie("jwt", jwtToken, {

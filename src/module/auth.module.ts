@@ -12,11 +12,8 @@ import { AuthService } from "src/service/auth.service";
 })
 export class AuthModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(LoggerMiddleware).
-            exclude(
-                { path: '/signin', method: RequestMethod.ALL },
-                { path: '/signup', method: RequestMethod.ALL },
-            ).forRoutes(AuthController)
+        consumer.apply(LoggerMiddleware)
+            .forRoutes(AuthController)
     }
 
 }

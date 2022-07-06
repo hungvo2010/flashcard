@@ -1,12 +1,8 @@
 import { Controller, Get, Param, Post, Redirect, Render, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { AppService } from '../service/app.service';
-
-import { Request, Response, Express } from 'express';
+import { Request, Response } from 'express';
 import { fstat, writeFile } from 'fs';
-import { FileInterceptor, MulterModule } from '@nestjs/platform-express';
-import multer, { diskStorage } from 'multer';
 import { CardController } from './card.controller';
-import { TableService } from 'src/service/table.service';
 
 
 
@@ -34,15 +30,11 @@ export class AppController {
     if (!address) {
       return;
     }
-<<<<<<< HEAD
     // console.log(req["user"]);
 
     const tables = await this.appService.getTables(req["user"].userId);
     // console.log(tables);
 
-=======
-    const tables = await this.appService.getTables();
->>>>>>> parent of 9dae8ca... refactor project, auth controller
     const htmlContent = await this.appService.getEmbedPageContent(
       address.toString(),
     );
@@ -55,11 +47,27 @@ export class AppController {
 
   @Get('/about')
   async getUserpage(@Req() req: Request, @Res() res: Response) {
-    let user = req['user'];
-    res.render('about', {
-      user,
-      result: 'success',
-    });
+    try {
+      let user = req['user'];
+      if (!user) {
+        res.status(400).json({
+          status: 'Render user page failed',
+          message: 'There is no user',
+          result: 'failed',
+        });
+      } else {
+        res.render('user', {
+          user,
+          result: 'success',
+        });
+      }
+    } catch (error) {
+      res.status(400).json({
+        status: 'There is some error when rendering user page',
+        result: 'failed',
+        message: error.message,
+      });
+    }
   }
 
   @Get('/table')
@@ -104,31 +112,4 @@ export class AppController {
       });
     }
   }
-<<<<<<< HEAD
-
-
-
-  // @Post('/upload')
-  // @UseInterceptors(
-  //   FileInterceptor('file', {
-  //     storage: diskStorage({
-  //       destination: './uploads',
-  //       filename: function (req, file, cb) {
-  //         cb(null, `${file.originalname}`);
-  //       },
-  //     })
-  //   }))
-  // uploadFile(@UploadedFile() file) {
-  //   const response = `http://localhost:3000/${file.filename}`
-  //   return response
-
-  // }
-
-
-  // @Get(':imgpath')
-  // seeUploadedFile(@Param('imgpath') image: string, @Res() res: Response) {
-  //   return res.sendFile(image, { root: './uploads' });
-  // }
-=======
->>>>>>> parent of 9dae8ca... refactor project, auth controller
 }
