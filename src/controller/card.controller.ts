@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Next, Post, Render, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Next,
+  Post,
+  Render,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { CardService } from '../service/card.service';
 import { Request, Response, NextFunction } from 'express';
 
@@ -37,28 +46,22 @@ export class CardController {
   }
 
   @Post('')
-  async getAll(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Next() next: NextFunction,
-  ) {
-    let {userID} = req.body;
-    if(!userID) {
+  async getAll(@Req() req: Request, @Res() res: Response) {
+    let { userID } = req.body;
+    if (!userID) {
       res.status(200).json({
-        status: "Get cards with given userID failed",
-        result: "failed"
+        status: 'Get cards with given userID failed',
+        result: 'failed',
       });
-    } 
-    else {
+    } else {
       let result = await this.cardService.getAll(userID);
       res.status(200).json({
         status: 'Get all cards with userID succesfully',
         size: result.length,
         cards: result,
-        result: "success"
+        result: 'success',
       });
     }
-    
   }
 
   @Post(':id')
@@ -119,8 +122,4 @@ export class CardController {
       });
     }
   }
-
-  @Get('')
-  @Render('index')
-  getHomepageView(@Res() res: Response) {}
 }

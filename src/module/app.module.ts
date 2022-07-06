@@ -7,6 +7,7 @@ import { AuthService } from 'src/service/auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { AuthorizeMiddleware } from 'src/middleware/authorize.middleware';
 import { TableModule } from './table.module';
+import { ViewController } from 'src/controller/view.controller';
 
 
 @Module({
@@ -14,7 +15,7 @@ import { TableModule } from './table.module';
     envFilePath: '.development.env',
     isGlobal: true,
   })],
-  controllers: [AppController, AuthController],
+  controllers: [AppController, AuthController, ViewController],
   providers: [AppService, AuthService],
 })
 export class AppModule implements NestModule {
