@@ -26,6 +26,8 @@ export class CardService {
           query(this.cardCollection, where('highlight', '==', body.highlight)),
         )
       ).docs;
+      // console.log(cards);
+      
 
       if (cards.length !== 0) {
         return RCode.CARD_ALREADY_EXISTS;

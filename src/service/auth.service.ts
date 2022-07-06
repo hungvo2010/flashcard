@@ -58,7 +58,10 @@ export class AuthService {
         if (checkPasswordRes === false) {
             return null;
         }
-        return users[0].data();
+        return {
+            ...users[0].data(),
+            "userId": users[0].id,
+        };
     }
 
     genJwtToken(payload: object): string | PromiseLike<string> {
