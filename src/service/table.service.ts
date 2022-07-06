@@ -1,5 +1,6 @@
 import { Injectable, Post, Req, Res } from '@nestjs/common';
 import { db } from '../database/firebase.config';
+import { v4 as uuid } from 'uuid';
 import {
   collection,
   getDoc,
@@ -25,9 +26,8 @@ export class TableService {
     // Truong hop chua co text
     if (flag == 0) {
       body['size'] = 0;
-      if (!body.isFavorite) body['isFavorite'] = false;
       if (!body.description) body['description'] = '';
-      await setDoc(doc(db, 'table', (tables.length + 1).toString()), body);
+      await setDoc(doc(db, 'table', uuid()), body);
       return 1;
     } else {
       return 0;
@@ -45,25 +45,31 @@ export class TableService {
       table['name'] = data.data().name;
       table['description'] = data.data().description;
       table['size'] = data.data().size;
-      table['isFavorite'] = data.data().isFavorite;
       return table;
     }
   }
 
-  async getAll() {
-    let doc = await getDocs(collection(db, 'table'));
-    let list = doc.docs;
-    let result = [];
-    list.forEach((ele) => {
-      let table = {};
-      table['id'] = ele.id;
-      table['name'] = ele.data().name;
-      table['description'] = ele.data().description;
-      table['size'] = ele.data().size;
-      table['isFavorite'] = ele.data().isFavorite;
-      result.push(table);
-    });
-    return result;
+  async getAll(userID) {
+    let currentUser = await getDoc(doc(db, 'user', userID));
+    if (!currentUser.exists) {
+      return null;
+    } else {
+      let result = [];
+      let list = await (
+        await getDocs(
+          query(collection(db, 'table'), where('userID', '==', userID)),
+        )
+      ).docs;
+      list.forEach((ele) => {
+        let table = {};
+        table['id'] = ele.id;
+        table['name'] = ele.data().name;
+        table['description'] = ele.data().description;
+        table['size'] = ele.data().size;
+        result.push(table);
+      });
+      return result;
+    }
   }
 
   async update(id: string, body) {

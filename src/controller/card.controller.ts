@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { CardService } from '../service/card.service';
 import { Request, Response, NextFunction } from 'express';
+import { CartDto } from 'src/dto/card.dto';
+import { RCode } from 'src/constant/RCode';
 
 @Controller('cards')
 export class CardController {
@@ -18,68 +20,56 @@ export class CardController {
   @Post('create')
   async create(
     @Req() req: Request,
+    @Body() cardBody: CartDto,
     @Res() res: Response,
-    @Next() next: NextFunction,
+    // @Next() next: NextFunction,
   ) {
     if (
-      !req.body ||
-      !req.body.highlight ||
-      !req.body.expand ||
-      !req.body.userID
+      !cardBody ||
+      !cardBody.highlight ||
+      !cardBody.expand ||
+      !cardBody.table
     ) {
       res.status(400).json({
         status: 'Create card failed',
-        message: 'Body data is invalid',
+        // message: 'Body data is invalid',
       });
     } else {
-      let result = await this.cardService.create(req.body);
-      if (result == 1) {
+      let result = await this.cardService.create(cardBody);
+      if (result === RCode.SUCCESS) {
         res.status(200).json({
           status: 'Create new card succesfully',
         });
-      } else {
+      } else if (result === RCode.FAIL) {
         res.status(400).json({
           status: 'Create new card failed',
+        });
+      } else {
+        res.status(400).json({
+          status: 'Create new card which already existed.',
         });
       }
     }
   }
 
   @Post('')
-  async getAll(@Req() req: Request, @Res() res: Response) {
-    let { userID } = req.body;
-    if (!userID) {
+  async getAll(
+    @Req() req: Request,
+    @Res() res: Response
+  ) {
+    let { table } = req.body;
+    if (!table) {
       res.status(200).json({
-        status: 'Get cards with given userID failed',
+        status: 'No table',
         result: 'failed',
       });
     } else {
-      let result = await this.cardService.getAll(userID);
+      let result = await this.cardService.getAll(table);
       res.status(200).json({
-        status: 'Get all cards with userID succesfully',
+        status: 'Get all cards succesfully',
         size: result.length,
         cards: result,
-        result: 'success',
-      });
-    }
-  }
-
-  @Post(':id')
-  async getById(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Next() next: NextFunction,
-  ) {
-    let { id } = req.params;
-    let card = await this.cardService.get(id);
-    if (card != null) {
-      res.status(200).json({
-        status: `Get a Card with id = ${id} successfully`,
-        card,
-      });
-    } else {
-      res.status(400).json({
-        status: `Get a Card with id = ${id} failed`,
+        result: "success"
       });
     }
   }
@@ -107,8 +97,7 @@ export class CardController {
   @Post(':id/delete')
   async deleteCard(
     @Req() req: Request,
-    @Res() res: Response,
-    @Next() next: NextFunction,
+    @Res() res: Response
   ) {
     let { id } = req.params;
     let result = await this.cardService.delete(id);
