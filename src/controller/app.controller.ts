@@ -44,7 +44,7 @@ export class AppController {
     });
   }
 
-  @Get('card')
+  @Get('/table')
   async getCardpage(@Req() req: Request, @Res() res: Response) {
     try {
       let user = req['user'];

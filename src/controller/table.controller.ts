@@ -1,5 +1,6 @@
 import { Controller, Get, Next, Post, Req, Res } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+import { doc, getDoc } from 'firebase/firestore';
 import { TableService } from '../service/table.service';
 
 @Controller('tables')
@@ -8,7 +9,7 @@ export class TableController {
 
   @Post('create')
   async create(@Req() req: Request, @Res() res: Response) {
-    if (!req.body || !req.body.name || !req.body.userID) {
+    if (!req.body || !req.body.userID) {
       res.status(400).json({
         status: 'Create table failed',
         message: 'Body data is invalid',
@@ -91,35 +92,34 @@ export class TableController {
 
   @Post(':id/update')
   async update(@Req() req: Request, @Res() res: Response) {
-    let { id } = req.body;
-    delete req.body.id;
+    let { id } = req.params;
     let result = await this.tableService.update(id, req.body);
     if (result == 1) {
       res.status(200).json({
         status: `Update name for table ${id} successfully`,
+        result: 'success',
       });
     } else {
       res.status(400).json({
         status: `Update name for table ${id} failed`,
+        result: 'failed',
       });
     }
   }
 
   @Post(':id/delete')
-  async deleteCard(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Next() next: NextFunction,
-  ) {
+  async deleteCard(@Req() req: Request, @Res() res: Response) {
     let { id } = req.params;
     let result = await this.tableService.delete(id);
     if (result == 1) {
       res.status(200).json({
         status: `Delete name for table ${id} successfully`,
+        result: 'success',
       });
     } else {
       res.status(400).json({
         status: `Delete name for table ${id} failed`,
+        result: 'failed',
       });
     }
   }
