@@ -124,8 +124,4 @@ export class CardController {
       });
     }
   }
-
-  @Get('')
-  @Render('index')
-  getHomepageView(@Res() res: Response) {}
 }
