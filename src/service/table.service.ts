@@ -50,7 +50,7 @@ export class TableService {
     }
   }
 
-  async getAll(userID) {
+  async getAll(userID: string) {
     let currentUser = await getDoc(doc(db, 'user', userID));
     if (!currentUser.exists) {
       return null;
@@ -63,7 +63,7 @@ export class TableService {
       ).docs;
       list.forEach((ele) => {
         let table = {};
-        table['id'] = ele.id;
+        table['tableId'] = ele.id;
         table['name'] = ele.data().name;
         table['description'] = ele.data().description;
         table['size'] = ele.data().size;

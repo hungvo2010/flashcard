@@ -137,10 +137,12 @@ flashcardMaker = (text, delThisIndex) => {
 
 // contentArray.forEach(flashcardMaker);
 
-addFlashcard = () => {
+function addFlashcard() {
   const highlightContent = highlight.value;
   const expandContent = expand.value;
   const table = document.querySelector("#table");
+
+  // console.log(highlightContent, expandContent);
 
   let flashcard_info = {
     'highlight': highlightContent,

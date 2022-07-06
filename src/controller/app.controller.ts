@@ -37,7 +37,11 @@ export class AppController {
     if (!address) {
       return;
     }
-    const tables = await this.appService.getTables();
+    // console.log(req["user"]);
+    
+    const tables = await this.appService.getTables(req["user"].userId);
+    // console.log(tables);
+    
     const htmlContent = await this.appService.getEmbedPageContent(
       address.toString(),
     );
@@ -47,6 +51,8 @@ export class AppController {
       tables,
     });
   }
+<<<<<<< HEAD
+=======
 
   @Get('/about')
   async getUserpage(@Req() req: Request, @Res() res: Response) {
@@ -118,9 +124,13 @@ export class AppController {
         
 }
 
+<<<<<<< HEAD
     @Get(':imgpath')
     seeUploadedFile(@Param('imgpath') image, @Res() res) {
       return res.sendFile(image, { root: './uploads' });
     }
 
+=======
+>>>>>>> origin/main
+>>>>>>> 55b331b75bf0bcbeb6b654ff6ab7e575e5391add
 }
