@@ -20,7 +20,6 @@ export class CardController {
   @Post('create')
   async create(@Req() req: Request, @Res() res: Response) {
     try {
-      console.log(req.body);
       let { highlight, expand, table } = req.body;
       if (!req.body || !highlight || !expand || !table) {
         res.status(400).json({
@@ -29,7 +28,6 @@ export class CardController {
           result: 'failed',
         });
       } else {
-        console.log("here");
         let result = await this.cardService.create(req.body);
         if (result === RCode.SUCCESS) {
           res.status(200).json({

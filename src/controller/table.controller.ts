@@ -5,50 +5,7 @@ import { TableService } from '../service/table.service';
 
 @Controller()
 export class TableController {
-  constructor(private tableService: TableService) { }
-
-  @Get('/table')
-  async getCardpage(@Req() req: Request, @Res() res: Response) {
-    try {
-      let user = req['user'];
-      if (!user) {
-        res.status(400).json({
-          status: 'Render card page failed',
-          result: 'failed',
-        });
-      } else {
-        fetch('http://localhost:3000/cards', {
-          headers: {
-            Accept: 'application/json',
-            'Content-type': 'application/json',
-          },
-          method: 'POST',
-          body: JSON.stringify({ userID: user.id }),
-        })
-          .then((resp) => resp.json())
-          .then((data) => {
-            if (data.result === 'success') {
-              res.render('user', {
-                user,
-                cards: data.cards,
-              });
-            } else {
-              res.status(400).json({
-                status: 'Render card page failed',
-                message: 'No cards data',
-                result: 'failed',
-              });
-            }
-          });
-      }
-    } catch (error) {
-      res.status(400).json({
-        status: 'There is some error when rendering card page',
-        result: 'failed',
-        message: error.message,
-      });
-    }
-  }
+  constructor(private tableService: TableService) {}
 
   @Post('create')
   async create(@Req() req: Request, @Res() res: Response) {

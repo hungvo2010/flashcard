@@ -1,12 +1,12 @@
 import { Injectable, Req } from '@nestjs/common';
 import { Request } from 'express';
 import * as puppeteer from 'puppeteer';
-import { TableService } from './table.service';
 
 @Injectable()
-export class AppService extends TableService {
+export class AppService {
   async getTables(userId: string) {
-    return this.getAll(userId);
+    const tables = ["english", "java", "python", "software design"];
+    return tables;
   }
   async getEmbedPageContent(address: string): Promise<string> {
     try {

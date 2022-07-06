@@ -6,10 +6,9 @@ import { AuthorizeMiddleware } from 'src/middleware/authorize.middleware';
 import { TableModule } from './table.module';
 import { AuthModule } from './auth.module';
 import { TableService } from 'src/service/table.service';
-import { UserModule } from './user.module';
 
 @Module({
-  imports: [AuthModule, CardModule, TableModule, UserModule],
+  imports: [AuthModule, CardModule, TableModule],
   controllers: [AppController],
   providers: [AppService, TableService],
 })

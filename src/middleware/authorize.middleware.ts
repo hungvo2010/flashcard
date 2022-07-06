@@ -37,6 +37,6 @@ export class AuthorizeMiddleware implements NestMiddleware {
         catch (err) {
             return res.redirect('/signin');
         }
-        // next();
+        next();
     }
 }

@@ -49,7 +49,6 @@ export class AppController {
     });
   }
 
-
   @Get('/about')
   async getUserpage(@Req() req: Request, @Res() res: Response) {
     let user = req['user'];

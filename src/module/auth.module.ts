@@ -8,7 +8,6 @@ import { AuthService } from "src/service/auth.service";
     imports: [],
     controllers: [AuthController],
     providers: [AuthService],
-    // exports: [AuthService]
 
 })
 export class AuthModule implements NestModule {

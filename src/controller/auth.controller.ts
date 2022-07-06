@@ -10,9 +10,10 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {
     }
 
+    
     @Get('/signin')
     // @Render('signin')
-    doGetSignin(@Res() res: Response) {
+    doGetSignin(@Res() res: Response) { 
         return res.render('signin', {
             error: false,
         });
@@ -24,7 +25,7 @@ export class AuthController {
         const { email, password }: { email: string, password: string } = postSigninBody;
         const signinRes: object = await this.authService.signin(email, password);
         // console.log(signinRes);
-
+        
         if (signinRes == null) {
             throw new HttpException("Signin failed", HttpStatus.UNAUTHORIZED);
         }
