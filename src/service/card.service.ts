@@ -8,6 +8,8 @@ import {
   doc,
   deleteDoc,
   setDoc,
+  query,
+  where,
 } from 'firebase/firestore';
 
 @Injectable()
@@ -57,17 +59,19 @@ export class CardService {
     }
   }
   // Function getAll return all document of cards
-  async getAll() {
-    let doc = await getDocs(collection(db, 'card'));
-    let list = doc.docs;
+  async getAll(userID: string) {
+    let q = query(collection(db, 'card'), where('userID', '==', userID));
+    let snapShots = await getDocs(q);
+
     let result = [];
-    list.forEach((ele) => {
+    snapShots.forEach((ele) => {
       let card = {};
       card['id'] = ele.id;
       card['highlight'] = ele.data().highlight;
       card['expand'] = ele.data().expand;
       card['table'] = ele.data().table;
       card['isFavorite'] = ele.data().isFavorite;
+      card['userID'] = ele.data().userID;
       result.push(card);
     });
     return result;
