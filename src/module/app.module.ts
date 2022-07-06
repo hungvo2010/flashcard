@@ -7,20 +7,20 @@ import { AuthService } from 'src/service/auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { AuthorizeMiddleware } from 'src/middleware/authorize.middleware';
 import { TableModule } from './table.module';
+import { AuthModule } from './auth.module';
+// import { CardController } from 'src/controller/card.controller';
+// import { TableController } from 'src/controller/table.controller';
 
 
 @Module({
-  imports: [CardModule, TableModule, ConfigModule.forRoot({
-    envFilePath: 'conf/.development.env',
-    isGlobal: true,
-  })],
-  controllers: [AppController, AuthController],
-  providers: [AppService, AuthService],
+  imports: [AuthModule, CardModule, TableModule],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthorizeMiddleware)
-      .forRoutes({ path: '/*', method: RequestMethod.ALL });
+      .forRoutes(AppController)
   }
 }

@@ -9,9 +9,8 @@ html {
 
 body {
 
+
     background-image: url("../image/loginpage_background.png");
-
-
     height: 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -65,14 +64,16 @@ h1 span {
     color: #0288D1;
     font-size: 22px;
 }
-.login-panel form #icon-pass1{
+
+.login-panel form #icon-pass1 {
     position: absolute;
     top: 65px;
     left: 20px;
     color: #0288D1;
     font-size: 22px;
 }
-.login-panel form #icon-pass2{
+
+.login-panel form #icon-pass2 {
     position: absolute;
     top: 120px;
     left: 20px;
@@ -80,7 +81,7 @@ h1 span {
     font-size: 22px;
 }
 
-.login-panel form #icon-pass3{
+.login-panel form #icon-pass3 {
     position: absolute;
     top: 177px;
     left: 20px;
@@ -104,4 +105,14 @@ h1 span {
 
 .modal a {
     text-decoration: none;
+}
+
+.err {
+    background: #ffe6ee;
+    border: 1px solid #b1395f;
+}
+
+.emsg {
+    color: #c12020;
+    font-weight: bold;
 }

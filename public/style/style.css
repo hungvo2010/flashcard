@@ -63,7 +63,7 @@ button:hover{
 
 #create_card{
   display: none;
-  width: 370px;
+  width: 300px;
   margin:auto;
   padding: 20px;
   margin-top: 10px;
@@ -76,7 +76,15 @@ button:hover{
   text-align: center;
 }
 
-#create_card textarea{
+#create_card textarea {
+  width: 100%;
+  border-radius: 5px;
+  font-family: inherit;
+  border: 1px solid lightgray;
+  resize: none;
+}
+
+#create_card select {
   width: 100%;
   border-radius: 5px;
   font-family: inherit;

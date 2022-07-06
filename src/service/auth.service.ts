@@ -11,6 +11,8 @@ import {
     deleteDoc,
     setDoc,
     CollectionReference,
+    where,
+    query,
 } from 'firebase/firestore';
 import { RCode } from "src/constant/RCode";
 import { sign } from "jsonwebtoken";
@@ -18,37 +20,41 @@ import { Config } from "src/constant/Config";
 
 @Injectable()
 export class AuthService {
-    private readonly ACCOUNT_COLLECTION_NAME: string = 'accounts';
-    private readonly accountCollection = collection(db, this.ACCOUNT_COLLECTION_NAME);
+    private readonly USER_COLLECTION_NAME: string = 'user';
+    private readonly userCollection = collection(db, this.USER_COLLECTION_NAME);
     async signup(email: string, fullname: string, password: string) {
-        const accountRf = doc(db, this.ACCOUNT_COLLECTION_NAME);
-        let oldAccount = await getDoc(accountRf);
-        if (oldAccount.exists()) {
+        // const accountRf = doc(db, this.ACCOUNT_COLLECTION_NAME);
+        // console.log(arguments);
+        
+        const userQuery = query(this.userCollection, where('email', '==', email));
+        let oldUser = (await getDocs(userQuery)).docs;
+        
+        if (oldUser.length !== 0) {
             return RCode.FAIL;
         }
 
-        const newAccount = doc(db, this.ACCOUNT_COLLECTION_NAME, uuid());
+        const newUser = doc(db, this.USER_COLLECTION_NAME, uuid());
         const hashedPassword = await hash(password, 12);
-        const signupAccountRes = await setDoc(newAccount, {
+        const signupUserRes = await setDoc(newUser, {
             email,
-            fullname: "142",
+            fullname: fullname || "Vo Chanh Hung",
             password: hashedPassword
         });
         return RCode.SUCCESS;
     }
 
     async signin(email: string, password: string) {
-        const accountRf = doc(db, this.ACCOUNT_COLLECTION_NAME, email);
-        const oldAccount = await getDoc(accountRf);
+        const userQuery = query(this.userCollection, where('email', '==', email));
+        let users = (await getDocs(userQuery)).docs;
 
-        console.log(oldAccount.data().password);
-        
-        
-        if (!oldAccount.exists()) {
+        // console.log(oldAccount[0].data().password);
+
+
+        if (users.length == 0) {
             return RCode.FAIL;
         }
 
-        const checkPasswordRes: boolean = await compare(password, oldAccount.data().password);
+        const checkPasswordRes: boolean = await compare(password, users[0].data().password);
         if (checkPasswordRes === false) {
             return RCode.FAIL;
         }
@@ -56,8 +62,9 @@ export class AuthService {
     }
 
     genJwtToken(payload: object): string | PromiseLike<string> {
+        // console.log(payload);
         const dev = process.env.NODE_ENV !== 'production';
-        const JWT_SECRET = dev ? process.env.JWT_SECRET_DEV : process.env.JWT_SECRET_LIVE;
+        const JWT_SECRET = dev ? Config.JWT_SECRET_DEV : Config.JWT_SECRET_LIVE;
         const token = sign(payload, JWT_SECRET, {
             expiresIn: Config.JWT_EXPIRE_IN,
         });

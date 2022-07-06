@@ -1,66 +1,102 @@
+// var contentArray = localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : [];
 
+const saveCardBtn = document.getElementById("save_card");
+var iframe = document.getElementById('iframe');
+const deleteCardBtn = document.getElementById("delete_cards");
+const showCardBoxBtn = document.getElementById("show_card_box");
+const closeCardBox = document.getElementById("close_card_box");
+const createCardBtn = document.getElementById("create_card");
+let highlight = document.getElementById("highlight");
+let expand = document.getElementById("expand");
+let content;
+let alreadyAddHighlight = false;
 
-var contentArray = localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : [];
-
-document.getElementById("save_card").addEventListener("click", () => {
+saveCardBtn.addEventListener("click", () => {
   addFlashcard();
 });
-var iframe = document.getElementById('iframe')
+
 
 var temp;
-iframe.onload = function() {
-//   // var doc = iframe.contentWindow.document;
-//   // doc.addEventListener('mouseup', Handler);
-//   // doc.addEventListener('mousedown', Handler);
-//   // console.log(doc)
-//   // iframe.document.addEventListener('mouseup', Handler)
-//   window.addEventListener('mouseup', Handler)
+iframe.onload = function () {
+  //   // var doc = iframe.contentWindow.document;
+  //   // doc.addEventListener('mouseup', Handler);
+  //   // doc.addEventListener('mousedown', Handler);
+  //   // console.log(doc)
+  //   // iframe.document.addEventListener('mouseup', Handler)
+  //   window.addEventListener('mouseup', Handler)
   iframe.contentWindow.document.addEventListener('mousedown', onMouseDown);
   iframe.contentWindow.document.addEventListener('mouseup', onMouseUp);
   temp = document.querySelector('#shareBoxTemplate');
-
-
-
 }
 
+function upload(){
+  let fileElement = document.getElementById('fileInput')
 
+      // check if user had selected a file
+      if (fileElement.files.length === 0) {
+        alert('please choose a file')
+        return
+      }
+
+      let file = fileElement.files[0]
+      console.log(file)
+      // let formData = new FormData();
+      // formData.set('file', file);
+      // axios.post("/upload", formData, {
+      //   onUploadProgress: progressEvent => {
+      //     const percentCompleted = Math.round(
+      //       (progressEvent.loaded * 100) / progressEvent.total
+      //     );
+      //     console.log(`upload process: ${percentCompleted}%`);
+      //   }
+      // })
+      //   .then(res => {
+      //     console.log(res.data)
+      //     console.log(res.data.url)
+      //   })
+    }
+
+
+    
 // iframe.addEventListener('load', function() {
 //   // Deliver the port to the iframe and initialize
 //   iframe.contentWindow.document.addEventListener('mouseup', Handler);
 //  })
 
 
-function addressIP() {
-  let query = document.getElementById("inputEmail3").value
-  // console.log(query)
-  fetch(query, {
-    method: "GET",
-  })
-  .then(src => {
-    
-  })
-  //document.getElementById("iframe").removeAttribute('src')
-  document.getElementById("iframe").setAttribute("src", query)
+// function addressIP() {
+//   let query = document.getElementById("inputEmail3").value
+//   // console.log(query)
+//   fetch(query, {
+//     method: "GET",
+//   })
+//     .then(src => {
 
-
-} 
+//     })
+//   //document.getElementById("iframe").removeAttribute('src')
+//   iframe.setAttribute("src", query)
+// }
 
 
 function Handler() {
   alert('works');
 }
-document.getElementById("delete_cards").addEventListener("click", () => {
+
+deleteCardBtn.addEventListener("click", () => {
   localStorage.clear();
   flashcards.innerHTML = '';
   contentArray = [];
 });
 
-document.getElementById("show_card_box").addEventListener("click", () => {
-  document.getElementById("create_card").style.display = "block";
+showCardBoxBtn.addEventListener("click", () => {
+  createCardBtn.style.display = "block";
 });
 
-document.getElementById("close_card_box").addEventListener("click", () => {
-  document.getElementById("create_card").style.display = "none";
+closeCardBox.addEventListener("click", () => {
+  createCardBtn.style.display = "none";
+  highlight.value = "";
+  expand.value = "";
+  alreadyAddHighlight = false;
 });
 
 flashcardMaker = (text, delThisIndex) => {
@@ -101,19 +137,35 @@ flashcardMaker = (text, delThisIndex) => {
 contentArray.forEach(flashcardMaker);
 
 addFlashcard = () => {
-  const question = document.querySelector("#question");
-  const answer = document.querySelector("#answer");
+  const highlightContent = highlight.value;
+  const expandContent = expand.value;
+  const table = document.querySelector("#table");
 
   let flashcard_info = {
-    'my_question': question.value,
-    'my_answer': answer.value
+    'highlight': highlightContent,
+    'expand': expandContent,
+    "table": table.value,
   }
 
-  contentArray.push(flashcard_info);
-  localStorage.setItem('items', JSON.stringify(contentArray));
-  flashcardMaker(contentArray[contentArray.length - 1], contentArray.length - 1);
-  question.value = "";
-  answer.value = "";
+  fetch('/cards/create', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(flashcard_info),
+  })
+  .then(res => {
+    if (res.status === 201) {
+      contentArray.push(flashcard_info);
+      flashcardMaker(contentArray[contentArray.length - 1], contentArray.length - 1);
+    }
+    else {
+      return res.json();
+    }
+  })
+  .then(res => {
+    alert(res.status);
+  })
 }
 //  var iframe = document.getElementById('iframe')
 //  iframe.contentWindow.document.addEventListener('mouseup', Handler);
@@ -126,42 +178,59 @@ addFlashcard = () => {
 // var temp = document.querySelector('#shareBoxTemplate');
 
 function onMouseDown() {
-  console.log('haha')
+  // console.log('haha')
   iframe.contentWindow.getSelection().removeAllRanges();
   var shareBox = document.querySelector('#shareBox');
   if (shareBox !== null)
 
-    shareBox.remove(); 
+    shareBox.remove();
 
 }
 
 function onMouseUp() {
-  console.log('haha')
-  var sel = iframe.contentWindow.getSelection(),
-  txt = sel.toString();
-  console.log(txt)
+  // console.log('haha')
+  var sel = iframe.contentWindow.getSelection()
+  const txt = sel.toString();
+  content = txt;
   if (txt !== "") {
     var range = sel.getRangeAt(0);
     //if (range.startContainer.parentElement.parentElement.localName === "article" || range.startContainer.parentElement.localName === "article") {
 
-      
-      document.body.insertBefore(document.importNode(temp.content, true), null);
-      var rect = range.getBoundingClientRect();
-      var shareBox = document.querySelector('#shareBox');
-      shareBox.style.top = `calc(${rect.top}px + 180px)`;
-      shareBox.style.left = `calc(${rect.left}px + calc(${rect.width}px / 2) )`;
-      
-      var shareBtn = shareBox.querySelector('button');
-      shareBtn['shareTxt'] = txt;
-      shareBtn.addEventListener('mousedown', onShareClick, true);
+
+    document.body.insertBefore(document.importNode(temp.content, true), null);
+    var rect = range.getBoundingClientRect();
+    var shareBox = document.querySelector('#shareBox');
+    shareBox.style.top = `calc(${rect.top}px + 180px)`;
+    shareBox.style.left = `calc(${rect.left}px + calc(${rect.width}px / 2) )`;
+
+    var shareBtn = shareBox.querySelector('button');
+    shareBtn['shareTxt'] = txt;
+    shareBtn.addEventListener('click', onShareClick, true);
 
     //}
   }
 }
 
+
+
 function onShareClick() {
-  window.open(`https://twitter.com/intent/tweet?text=${this.shareTxt}`);
-  this.remove();
+  // window.open(`https://twitter.com/intent/tweet?text=${this.shareTxt}`);
+  // this.remove();
+  showCardBoxBtn.click();
+  const textSelection = getTextSelection();
+  console.log(textSelection);
+  if (alreadyAddHighlight) {
+    expand.value = textSelection;
+    alreadyAddHighlight = false;
+  }
+  else {
+    highlight.value = textSelection;
+    alreadyAddHighlight = true;
+  }
   iframe.contentWindow.getSelection().removeAllRanges()
+}
+
+function getTextSelection() {
+  return content;
 }
 
