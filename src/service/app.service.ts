@@ -4,7 +4,11 @@ import * as puppeteer from 'puppeteer';
 
 @Injectable()
 export class AppService {
+<<<<<<< HEAD
   async getTables(userId: string) {
+=======
+  async getTables() {
+>>>>>>> parent of 9dae8ca... refactor project, auth controller
     const tables = ["english", "java", "python", "software design"];
     return tables;
   }

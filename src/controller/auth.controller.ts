@@ -10,6 +10,19 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {
     }
 
+<<<<<<< HEAD
+=======
+    @Get('')
+    redirect(req: Request, res: Response) {
+        if (!req.cookies.jwt) {
+            res.redirect('/signin');
+        }
+        else {
+            res.redirect('/home');
+        }
+    }
+
+>>>>>>> parent of 9dae8ca... refactor project, auth controller
     
     @Get('/signin')
     // @Render('signin')

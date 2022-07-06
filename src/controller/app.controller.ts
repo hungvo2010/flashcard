@@ -34,11 +34,15 @@ export class AppController {
     if (!address) {
       return;
     }
+<<<<<<< HEAD
     // console.log(req["user"]);
 
     const tables = await this.appService.getTables(req["user"].userId);
     // console.log(tables);
 
+=======
+    const tables = await this.appService.getTables();
+>>>>>>> parent of 9dae8ca... refactor project, auth controller
     const htmlContent = await this.appService.getEmbedPageContent(
       address.toString(),
     );
@@ -100,6 +104,7 @@ export class AppController {
       });
     }
   }
+<<<<<<< HEAD
 
 
 
@@ -124,4 +129,6 @@ export class AppController {
   // seeUploadedFile(@Param('imgpath') image: string, @Res() res: Response) {
   //   return res.sendFile(image, { root: './uploads' });
   // }
+=======
+>>>>>>> parent of 9dae8ca... refactor project, auth controller
 }
