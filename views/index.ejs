@@ -106,11 +106,11 @@
               <!-- <br> -->
               <textarea id="expand" name="expand"></textarea>
               <label for="table" class="my-1">Table</label>
-              <select name="table" id="table" class="mb-4 py-3">
-                <option selected value="default">Default</option>
+              <select name="tableId" id="table" class="mb-4 py-3">
+                <!-- <option selected value="default">Default</option> -->
                 <% for (let table of tables) { %>
-                  <option value="<%= table %>">
-                    <%= table %>
+                  <option value="<%= table.id %>">
+                    <%= table.name %>
                   </option>
                   <% } %>
               </select>

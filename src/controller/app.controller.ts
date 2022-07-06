@@ -33,8 +33,6 @@ export class AppController {
     // console.log(req["user"]);
 
     const tables = await this.appService.getTables(req["user"].userId);
-    // console.log(tables);
-
     const htmlContent = await this.appService.getEmbedPageContent(
       address.toString(),
     );
@@ -56,9 +54,11 @@ export class AppController {
           result: 'failed',
         });
       } else {
+        const tables = await this.appService.getTables(user.userId);
         res.render('user', {
+          error: false,
           user,
-          result: 'success',
+          tables,
         });
       }
     } catch (error) {
@@ -92,6 +92,7 @@ export class AppController {
           .then((data) => {
             if (data.result === 'success') {
               res.render('user', {
+                error: false,
                 user,
                 cards: data.cards,
               });

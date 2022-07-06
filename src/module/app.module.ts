@@ -7,7 +7,7 @@ import { TableModule } from './table.module';
 import { AuthModule } from './auth.module';
 
 @Module({
-  imports: [CardModule],
+  imports: [CardModule, TableModule],
   controllers: [AppController],
   providers: [AppService],
 })

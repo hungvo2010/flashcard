@@ -3,16 +3,18 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-header{
+header {
     background-color: #0288D1 !important;
 }
 
-.navbar-brand{
+.navbar-brand {
     color: white !important;
 }
-.navbar-brand span{
+
+.navbar-brand span {
     color: #B3E5FC;
 }
+
 #nav {
     background-color: #03A9F4;
 }
@@ -35,9 +37,9 @@ header{
     color: #B3E5FC;
 }
 
-.table_responsive{
+.table_responsive {
     overflow: scroll;
-    max-height: 300px ;
+    max-height: 300px;
 }
 
 .nav-item {
@@ -92,4 +94,9 @@ header{
 
 #buttonAdd3 {
     background-color: rgb(225, 22, 107);
+}
+
+.emsg {
+    color: #c12020;
+    font-weight: bold;
 }

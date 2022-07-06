@@ -19,7 +19,7 @@ import { v4 as uuid } from 'uuid';
 export class CardService {
   private readonly CARD_COLLECTION_NAME: string = 'card';
   private readonly cardCollection = collection(db, this.CARD_COLLECTION_NAME);
-  async create(body) {
+  async create(body: CartDto) {
     try {
       let cards = (
         await getDocs(
@@ -31,9 +31,6 @@ export class CardService {
         return RCode.CARD_ALREADY_EXISTS;
       } else {
         await setDoc(doc(db, this.CARD_COLLECTION_NAME, uuid()), body);
-
-
-
         let currentTable = await getDoc(doc(db, 'table', body.table));
         if (!currentTable.exists) return RCode.FAIL;
         else {

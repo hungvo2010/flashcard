@@ -30,17 +30,25 @@ export class AuthService {
         let oldUser = (await getDocs(userQuery)).docs;
         
         if (oldUser.length !== 0) {
-            return RCode.FAIL;
+            return null;
         }
 
-        const newUser = doc(db, this.USER_COLLECTION_NAME, uuid());
+        let userId: string = uuid();
+        const newUser = doc(db, this.USER_COLLECTION_NAME, userId);
         const hashedPassword = await hash(password, 12);
-        const signupUserRes = await setDoc(newUser, {
+        await setDoc(newUser, {
             email,
             fullname: fullname || "Vo Chanh Hung",
             password: hashedPassword
         });
-        return RCode.SUCCESS;
+        const defaultTable = doc(db, 'table', uuid());
+        await setDoc(defaultTable, {
+            description: "default",
+            name: "Default",
+            size: 0,
+            userId,
+        })
+        return userId;
     }
 
     async signin(email: string, password: string) {
@@ -51,14 +59,17 @@ export class AuthService {
 
 
         if (users.length == 0) {
-            return RCode.FAIL;
+            return null;
         }
 
         const checkPasswordRes: boolean = await compare(password, users[0].data().password);
         if (checkPasswordRes === false) {
-            return RCode.FAIL;
+            return null;
         }
-        return RCode.SUCCESS;
+        return {
+            ...users[0].data(),
+            "userId": users[0].id
+        }
     }
 
     genJwtToken(payload: object): string | PromiseLike<string> {

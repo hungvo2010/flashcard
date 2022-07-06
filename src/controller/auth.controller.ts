@@ -33,7 +33,7 @@ export class AuthController {
     @Redirect('/')
     async doPostSignin(@Body() postSigninBody: PostSigninDto, @Req() req: Request, @Res() res: Response) {
         const { email, password }: { email: string, password: string } = postSigninBody;
-        const signinRes: number = await this.authService.signin(email, password);
+        const signinRes: object = await this.authService.signin(email, password);
         // console.log(signinRes);
         
         if (signinRes == null) {
@@ -61,8 +61,8 @@ export class AuthController {
     // @Redirect('/signin')
     async doPostSignup(@Body() postSignupBody: PostSignupDto, @Res() res: Response) {
         const { email, fullname, password }: { email: string, fullname: string, password: string } = postSignupBody;
-        const signupRes: number = await this.authService.signup(email, fullname, password);
-        if (signupRes == RCode.FAIL) {
+        const signupRes = await this.authService.signup(email, fullname, password);
+        if (signupRes == null) {
             // throw new HttpException("Signup failed", HttpStatus.NOT_ACCEPTABLE);
             return res.render('signup', {
                 error: true

@@ -12,80 +12,80 @@ import {
   query,
   where,
 } from 'firebase/firestore';
+import { RCode } from 'src/constant/RCode';
 
 @Injectable()
 export class TableService {
-  async create(body) {
-    let existData = await (
+  async create(body, userId) {
+    let existData = (
       await getDocs(
-        query(collection(db, 'table'), where('name', '==', body.name)),
+        query(collection(db, 'table'), where('name', '==', body.table), where('userId', '==', userId)),
       )
     ).size;
     if (existData == 0) {
-      let newTable = {};
-      newTable['name'] = body.name;
-      newTable['description'] = body.description ? body.description : '';
-      newTable['size'] = 0;
-      newTable['userID'] = body.userID;
-
+      let newTable = {
+        "name": body.table,
+        "description": '',
+        size: 0,
+        userId,
+      };
       await setDoc(doc(db, 'table', uuid()), newTable);
-      return 1;
+      return RCode.SUCCESS;
     } else {
-      return 0;
+      return RCode.FAIL;
     }
   }
 
-  async get(id: string) {
-    let ref = doc(db, 'table', id);
-    let data = await getDoc(ref);
-    if (!data.exists()) {
-      return 0;
-    } else {
-      let table = {};
-      table['id'] = data.id;
-      table['name'] = data.data().name;
-      table['description'] = data.data().description;
-      table['size'] = data.data().size;
-      return table;
+  async getCards(tableId: string) {
+    let tableRef = query(collection(db, 'table'), where('tableId', '==', tableId));
+    let cardDocs = (await getDocs(tableRef)).docs;
+    let cardsRes = [];
+    for (let cardDoc of cardDocs) {
+      cardsRes.push({
+        ...cardDoc,
+        id: cardDoc.id,
+      })
     }
+    return cardsRes;
   }
 
-  async getAll(userID) {
-    let currentUser = await getDoc(doc(db, 'user', userID));
+  async getAll(userId: string) {
+    let currentUser = await getDoc(doc(db, 'user', userId));
+
     if (!currentUser.exists) {
-      return null;
-    } else {
-      let result = [];
-      let list = await (
+      return [];
+    }
+    else {
+      let listTableRes = [];
+      let listDocs = (
         await getDocs(
-          query(collection(db, 'table'), where('userID', '==', userID)),
+          query(collection(db, 'table'), where('userId', '==', userId)),
         )
       ).docs;
-      list.forEach((ele) => {
-        let table = {};
-        table['id'] = ele.id;
-        table['name'] = ele.data().name;
-        table['description'] = ele.data().description;
-        table['size'] = ele.data().size;
-        result.push(table);
+      listDocs.forEach((doc) => {
+        let table = {
+          ...doc.data(),
+          id: doc.id
+        }
+        listTableRes.push(table);
       });
-      return result;
+      return listTableRes;
     }
   }
 
-  async update(id: string, body) {
-    let ref = doc(db, 'table', id);
-    let table = await getDoc(ref);
-    if (!table.exists) {
-      return 0;
-    } else {
-      await updateDoc(ref, body);
-      return 1;
-    }
-  }
+  // async update(id: string, body) {
+  //   let ref = doc(db, 'table', id);
+  //   let table = await getDoc(ref);
+  //   if (!table.exists) {
+  //     return 0;
+  //   } else {
+  //     await updateDoc(ref, body);
+  //     return 1;
+  //   }
+  // }
 
-  async delete(id: string) {
-    let table = await getDoc(doc(db, 'table', id));
+  async delete(tableId: string) {
+    let table = await getDoc(doc(db, 'table', tableId));
     if (!table.exists) {
       return 0;
     } else {
@@ -93,7 +93,7 @@ export class TableService {
       for (let i = 0; i < cards.length; i++) {
         deleteDoc(doc(db, 'card', cards[i].id));
       }
-      await deleteDoc(doc(db, 'table', id));
+      await deleteDoc(doc(db, 'table', tableId));
       return 1;
     }
   }
