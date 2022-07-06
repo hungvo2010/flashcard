@@ -18,46 +18,47 @@ export class CardController {
   constructor(private cardService: CardService) {}
 
   @Post('create')
-  async create(
-    @Req() req: Request,
-    @Body() cardBody: CartDto,
-    @Res() res: Response,
-    // @Next() next: NextFunction,
-  ) {
-    if (
-      !cardBody ||
-      !cardBody.highlight ||
-      !cardBody.expand ||
-      !cardBody.table
-    ) {
-      res.status(400).json({
-        status: 'Create card failed',
-        // message: 'Body data is invalid',
-      });
-    } else {
-      let result = await this.cardService.create(cardBody);
-      if (result === RCode.SUCCESS) {
-        res.status(200).json({
-          status: 'Create new card succesfully',
-        });
-      } else if (result === RCode.FAIL) {
+  async create(@Req() req: Request, @Res() res: Response) {
+    try {
+      let { highlight, expand, table } = req.body;
+      if (!req.body || !highlight || !expand || !table) {
         res.status(400).json({
-          status: 'Create new card failed',
+          status: 'Create card failed',
+          message: 'Body data is invalid',
+          result: 'failed',
         });
       } else {
-        res.status(400).json({
-          status: 'Create new card which already existed.',
-        });
+        let result = await this.cardService.create(req.body);
+        if (result === RCode.SUCCESS) {
+          res.status(200).json({
+            status: 'Create new card succesfully',
+            result: 'success',
+          });
+        } else if (result === RCode.FAIL) {
+          res.status(400).json({
+            status: 'Create new card failed',
+            result: 'failed',
+          });
+        } else {
+          res.status(400).json({
+            status: 'Create new card which already existed.',
+            result: 'failed',
+          });
+        }
       }
+    } catch (error) {
+      res.status(400).json({
+        status: 'Error while creating new card',
+        result: 'failed',
+        message: error.message,
+      });
     }
   }
 
-  @Post('')
-  async getAll(
-    @Req() req: Request,
-    @Res() res: Response
-  ) {
+  @Post('/')
+  async getAll(@Req() req: Request, @Res() res: Response) {
     let { table } = req.body;
+    console.log(table);
     if (!table) {
       res.status(200).json({
         status: 'No table',
@@ -69,45 +70,57 @@ export class CardController {
         status: 'Get all cards succesfully',
         size: result.length,
         cards: result,
-        result: "success"
+        result: 'success',
       });
     }
   }
 
   @Post(':id/update')
-  async updateNote(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Next() next: NextFunction,
-  ) {
-    let { id } = req.params;
-    let { expand } = req.body;
-    let result = await this.cardService.update(id, req.body);
-    if (result == 1) {
-      res.status(200).json({
-        status: `Update expand for card ${id} successfully`,
-      });
-    } else {
+  async update(@Req() req: Request, @Res() res: Response) {
+    try {
+      let { id } = req.params;
+      let result = await this.cardService.update(id, req.body);
+      if (result == 1) {
+        res.status(200).json({
+          status: `Update expand for card ${id} successfully`,
+          result: 'success',
+        });
+      } else {
+        res.status(400).json({
+          status: `Update expand for card ${id} failed`,
+          result: 'failed',
+        });
+      }
+    } catch (error) {
       res.status(400).json({
-        status: `Update expand for card ${id} failed`,
+        status: 'Error while updating card',
+        message: error.message,
+        result: 'failed',
       });
     }
   }
 
   @Post(':id/delete')
-  async deleteCard(
-    @Req() req: Request,
-    @Res() res: Response
-  ) {
-    let { id } = req.params;
-    let result = await this.cardService.delete(id);
-    if (result == 1) {
-      res.status(200).json({
-        status: `Delete expand for card ${id} successfully`,
-      });
-    } else {
+  async delete(@Req() req: Request, @Res() res: Response) {
+    try {
+      let { id } = req.params;
+      let result = await this.cardService.delete(id);
+      if (result == 1) {
+        res.status(200).json({
+          status: `Delete expand for card ${id} successfully`,
+          result: 'success',
+        });
+      } else {
+        res.status(400).json({
+          status: `Delete expand for card ${id} failed`,
+          result: 'failed',
+        });
+      }
+    } catch (error) {
       res.status(400).json({
-        status: `Delete expand for card ${id} failed`,
+        status: `Delete expand for card failed`,
+        result: 'failed',
+        message: error.message
       });
     }
   }
