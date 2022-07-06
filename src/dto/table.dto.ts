@@ -4,7 +4,7 @@ export class TableDto {
     userID: string;
     size: Number;
 
-    constructor(name, description, userID) {
+    constructor(name: string, description: string, userID: string) {
         this.name = name;
         this.description = description;
         this.userID = userID;

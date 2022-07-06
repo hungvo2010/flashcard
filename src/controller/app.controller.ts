@@ -1,12 +1,12 @@
 import { Controller, Get, Redirect, Render, Req, Res } from '@nestjs/common';
 import { AppService } from '../service/app.service';
 import { Request, Response } from 'express';
-import { fstat, writeFile } from 'fs';
 import { CardController } from './card.controller';
+import { TableService } from 'src/service/table.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
   @Get('/')
   // @Render('index')
   async getIndex(@Req() req: Request, @Res() res: Response) {
@@ -37,27 +37,11 @@ export class AppController {
 
   @Get('/about')
   async getUserpage(@Req() req: Request, @Res() res: Response) {
-    try {
-      let user = req['user'];
-      if (!user) {
-        res.status(400).json({
-          status: 'Render user page failed',
-          message: 'There is no user',
-          result: 'failed',
-        });
-      } else {
-        res.render('user', {
-          user,
-          result: 'success',
-        });
-      }
-    } catch (error) {
-      res.status(400).json({
-        status: 'There is some error when rendering user page',
-        result: 'failed',
-        message: error.message,
-      });
-    }
+    let user = req['user'];
+    res.render('about', {
+      user,
+      result: 'success',
+    });
   }
 
   @Get('card')

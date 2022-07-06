@@ -3,7 +3,7 @@ export class CartDto {
     expand: string;
     table: string;
 
-    constructor(highlight, expand, table) {
+    constructor(highlight: string, expand: string, table: string) {
         this.highlight = highlight;
         this.expand = expand;
         this.table = table;

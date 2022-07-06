@@ -23,15 +23,13 @@ export class AuthController {
     @Redirect('/')
     async doPostSignin(@Body() postSigninBody: PostSigninDto, @Req() req: Request, @Res() res: Response) {
         const { email, password }: { email: string, password: string } = postSigninBody;
-        const signinRes: number = await this.authService.signin(email, password);
+        const signinRes: object = await this.authService.signin(email, password);
         // console.log(signinRes);
         
-        if (signinRes == RCode.FAIL) {
+        if (signinRes == null) {
             throw new HttpException("Signin failed", HttpStatus.UNAUTHORIZED);
         }
-        const jwtToken: string = await this.authService.genJwtToken({
-            email,
-        });
+        const jwtToken: string = await this.authService.genJwtToken(signinRes);
         const cookieMaxAge: number = Config.JWT_COOKIE_MAX_AGE;
         res.setHeader("Authorization", "Bearer " + jwtToken);
         res.cookie("jwt", jwtToken, {

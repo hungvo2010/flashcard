@@ -8,11 +8,12 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthorizeMiddleware } from 'src/middleware/authorize.middleware';
 import { TableModule } from './table.module';
 import { AuthModule } from './auth.module';
+import { TableService } from 'src/service/table.service';
 
 @Module({
   imports: [AuthModule, CardModule, TableModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TableService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

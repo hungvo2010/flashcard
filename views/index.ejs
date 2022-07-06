@@ -38,7 +38,7 @@
               <a class="nav-link" href="./list_note.html" style="color: white; font-size: 23px;">List Note</a>
             </li>
             <li class="nav-item ms-auto">
-              <a class="nav-link " href="./user_page.html" style="color: white; font-size: 23px;">User</a>
+              <a class="nav-link " href="/about" style="color: white; font-size: 23px;">About</a>
             </li>
 
           </ul>
@@ -58,8 +58,9 @@
           <input type="url" placeholder="Nhập địa chỉ trang web" value="<%= url %>" class="form-control" id="addressUrl"
             name="address">
         </div>
+        <button type="submit" form="formRedirectUrl" class="col-sm-2 btn btn-primary">Chuyển hướng</button>
       </form>
-      <button type="submit" form="formRedirectUrl" class="col-sm-2 btn btn-primary">Chuyển hướng</button>
+
       <!-- <button type="submit" form="formRedirectUrl" class="col-sm-2 btn btn-primary" onclick="addressIP()">Chuyển hướng</button> -->
 
     </div>
@@ -92,7 +93,7 @@
                   <option value="<%= table %>">
                     <%= table %>
                   </option>
-                <% } %>
+                  <% } %>
               </select>
               <div>
                 <button id="save_card">Save</button> <button id="close_card_box">Close</button>

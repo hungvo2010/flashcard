@@ -11,6 +11,7 @@ import { TableService } from "src/service/table.service";
     imports: [],
     controllers: [TableController, AuthController],
     providers: [TableService, AuthService],
+    exports: [TableService]
 })
 export class TableModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
