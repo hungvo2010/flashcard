@@ -7,5 +7,11 @@ export class AppController {
   constructor(private readonly appService: AppService) { }
   @Get('')
   @Render('signin')
-  renderView(@Res() res: Response) {}
+  renderView(@Res() res: Response) {};
+  
+  
+  @Get('index')
+  @Render('index')
+  doSomething(@Res() res: Response){ }
+
 }

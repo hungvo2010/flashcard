@@ -8,7 +8,6 @@ import { Config } from "src/constant/Config";
 @Controller()
 export class AuthController {
     constructor(private readonly authService: AuthService) {
-
     }
 
     @Get('/signin')

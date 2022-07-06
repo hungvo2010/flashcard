@@ -8,11 +8,10 @@ html {
 }
 
 body {
-<<<<<<< HEAD:Frontend/style/style_login.css
+
     background-image: url("../image/loginpage_background.png");
-=======
-    background-image: url("/image/loginpage_background.png");
->>>>>>> e684d9615fc7b7a60bdba2bc71a76e72354a7b3f:public/style/auth.css
+
+
     height: 100%;
     background-position: center;
     background-repeat: no-repeat;
