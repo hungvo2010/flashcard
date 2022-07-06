@@ -1,0 +1,2 @@
+Flexiable object: doc object co nhieu thuoc tinh khong xac dinh duoc hoac method cua no
+Distributed Object: chia nho object o phia server va client, co mot template SObject chung cho tat ca object, va 1 SObjectManager de quan li object, tuong tu nhu o client

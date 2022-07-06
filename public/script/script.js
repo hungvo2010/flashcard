@@ -37,23 +37,27 @@ function upload(){
         alert('please choose a file')
         return
       }
-
-      let file = fileElement.files[0]
-      console.log(file)
-      // let formData = new FormData();
-      // formData.set('file', file);
-      // axios.post("/upload", formData, {
-      //   onUploadProgress: progressEvent => {
-      //     const percentCompleted = Math.round(
-      //       (progressEvent.loaded * 100) / progressEvent.total
-      //     );
-      //     console.log(`upload process: ${percentCompleted}%`);
-      //   }
-      // })
-      //   .then(res => {
-      //     console.log(res.data)
-      //     console.log(res.data.url)
-      //   })
+      file = fileElement.files[0]
+      
+      let formData = new FormData();
+      formData.set('file', file);
+      axios.post("/upload", formData, {
+        onUploadProgress: progressEvent => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          console.log(`upload process: ${percentCompleted}%`);
+        }
+      })
+        .then(res => {
+          
+          
+          console.log(res.data)
+          iframe = document.getElementById('iframe')
+          iframe.removeAttribute('srcdoc')
+          iframe.setAttribute('src', res.data)
+          
+        })
     }
 
 
@@ -78,9 +82,6 @@ function upload(){
 // }
 
 
-function Handler() {
-  alert('works');
-}
 
 deleteCardBtn.addEventListener("click", () => {
   localStorage.clear();
@@ -134,7 +135,7 @@ flashcardMaker = (text, delThisIndex) => {
   document.querySelector("#flashcards").appendChild(flashcard);
 }
 
-contentArray.forEach(flashcardMaker);
+// contentArray.forEach(flashcardMaker);
 
 addFlashcard = () => {
   const highlightContent = highlight.value;
@@ -200,7 +201,7 @@ function onMouseUp() {
     document.body.insertBefore(document.importNode(temp.content, true), null);
     var rect = range.getBoundingClientRect();
     var shareBox = document.querySelector('#shareBox');
-    shareBox.style.top = `calc(${rect.top}px + 180px)`;
+    shareBox.style.top = `calc(${rect.top}px + 280px)`;
     shareBox.style.left = `calc(${rect.left}px + calc(${rect.width}px / 2) )`;
 
     var shareBtn = shareBox.querySelector('button');

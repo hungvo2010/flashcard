@@ -1,12 +1,15 @@
-import { Controller, Get, Post, Redirect, Render, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, Post, Redirect, Render, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { AppService } from '../service/app.service';
 
 import { Request, Response, Express } from 'express';
 import { fstat, writeFile } from 'fs';
 import { FileInterceptor, MulterModule } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import multer ,{ diskStorage } from 'multer';
 import { CardController } from './card.controller';
 import { TableService } from 'src/service/table.service';
+
+
+
 
 @Controller()
 export class AppController {
@@ -32,7 +35,7 @@ export class AppController {
     let address = req.query.address;
     // console.log(address);
     if (!address) {
-      address = 'https://apps.ankiweb.net/';
+      return;
     }
     const tables = await this.appService.getTables();
     const htmlContent = await this.appService.getEmbedPageContent(
@@ -96,16 +99,28 @@ export class AppController {
       });
     }
   }
-
+  
+ 
 
   @Post('/upload')
-  @UseInterceptors(FileInterceptor('file')
-  )
-  uploadFile(@UploadedFile() file: Express.Multer.File): void {
-    MulterModule.register({
-      dest: './upload',
-    });
-  console.log(file);
+  @UseInterceptors(
+    FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: function (req, file, cb) {
+        cb(null, `${file.originalname}`);
+      },
+    })
+  }))
+  uploadFile(@UploadedFile() file) {
+    const response = `http://localhost:3000/${file.filename}`
+    return response
+        
 }
+
+    @Get(':imgpath')
+    seeUploadedFile(@Param('imgpath') image, @Res() res) {
+      return res.sendFile(image, { root: './uploads' });
+    }
 
 }
