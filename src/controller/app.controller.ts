@@ -1,14 +1,11 @@
 import { Controller, Get, Redirect, Render, Req, Res } from '@nestjs/common';
 import { AppService } from '../service/app.service';
 import { Request, Response } from 'express';
-import { fstat, writeFile } from 'fs';
-import { CardController } from './card.controller';
 
-@Controller()
+@Controller('/')
 export class AppController {
   constructor(private readonly appService: AppService) {}
-  @Get('/')
-  // @Render('index')
+  @Get('')
   async getIndex(@Req() req: Request, @Res() res: Response) {
     res.render('index', {
       embedContent: '',
@@ -20,7 +17,6 @@ export class AppController {
   @Get('/page')
   async getEmbedPage(@Req() req: Request, @Res() res: Response) {
     let address = req.query.address;
-    // console.log(address);
     if (!address) {
       address = 'https://apps.ankiweb.net/';
     }
@@ -36,11 +32,12 @@ export class AppController {
   }
 
   @Get('/about')
-  async getUserpage(@Req() req: Request, @Res() res: Response) {
+  async getUserPage(@Req() req: Request, @Res() res: Response) {
     try {
       let user = req['user'];
       if (!user) {
-        res.status(400).json({
+        console.log("No user");
+        res.status(200).json({
           status: 'Render user page failed',
           message: 'There is no user',
           result: 'failed',
@@ -48,7 +45,6 @@ export class AppController {
       } else {
         res.render('user', {
           user,
-          result: 'success',
         });
       }
     } catch (error) {
@@ -61,7 +57,7 @@ export class AppController {
   }
 
   @Get('/table')
-  async getCardpage(@Req() req: Request, @Res() res: Response) {
+  async getTablePage(@Req() req: Request, @Res() res: Response) {
     try {
       let user = req['user'];
       if (!user) {
@@ -70,7 +66,7 @@ export class AppController {
           result: 'failed',
         });
       } else {
-        fetch('http://localhost:3000/cards', {
+        fetch('http://localhost:3000/tables', {
           headers: {
             Accept: 'application/json',
             'Content-type': 'application/json',
@@ -83,12 +79,12 @@ export class AppController {
             if (data.result === 'success') {
               res.render('user', {
                 user,
-                cards: data.cards,
+                tables: data.tables,
               });
             } else {
               res.status(400).json({
-                status: 'Render card page failed',
-                message: 'No cards data',
+                status: 'Render table page failed',
+                message: 'No table data',
                 result: 'failed',
               });
             }
@@ -100,6 +96,42 @@ export class AppController {
         result: 'failed',
         message: error.message,
       });
+    }
+  }
+
+  @Get('/table/:id')
+  async getDetailPage(@Req() req: Request, @Res() res: Response) {
+    let { id } = req.params;
+    let user = req['user'];
+    if (!user) {
+      res.status(400).json({
+        status: 'Render card page failed',
+        result: 'failed',
+      });
+    } else {
+      fetch('http://localhost:3000/cards', {
+        headers: {
+          Accept: 'application/json',
+          'Content-type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({ table: id }),
+      })
+        .then((resp) => resp.json())
+        .then((data) => {
+          if (data.result === 'success') {
+            res.render('user', {
+              user,
+              cards: data.cards,
+            });
+          } else {
+            res.status(400).json({
+              status: 'Render card page failed',
+              message: 'No cards data',
+              result: 'failed',
+            });
+          }
+        });
     }
   }
 }
