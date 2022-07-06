@@ -8,9 +8,6 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthorizeMiddleware } from 'src/middleware/authorize.middleware';
 import { TableModule } from './table.module';
 import { AuthModule } from './auth.module';
-// import { CardController } from 'src/controller/card.controller';
-// import { TableController } from 'src/controller/table.controller';
-
 
 @Module({
   imports: [AuthModule, CardModule, TableModule],

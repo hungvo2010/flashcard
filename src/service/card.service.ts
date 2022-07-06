@@ -32,7 +32,8 @@ export class CardService {
 
       let tableQuery = query(collection(db, 'table'), where("name", "==", cardBody.table));
       let updateTable = (await getDocs(tableQuery)).docs[0];
-      await updateDoc(updateTable, {
+      let ref = doc(db, "card", updateTable.id);
+      await updateDoc(ref, {
         size: updateTable["size"] + 1,
       });
       return RCode.SUCCESS;
@@ -42,38 +43,25 @@ export class CardService {
       return RCode.FAIL;
     }
   }
-  
-  // Function get card take highlight highlight as input and return a list of document have highlight highlight equal to input
-  async get(id: string) {
-    let ref = doc(db, 'card', id);
-    let data = await getDoc(ref);
-    if (data.exists()) {
-      let card = {};
-      card['id'] = data.id;
-      card['highlight'] = data.data().highlight;
-      card['expand'] = data.data().expand;
-      card['table'] = data.data().table;
-      card['isFavorite'] = data.data().isFavorite;
-      return card;
-    } else {
+  // Function getAll return all document of cards belong to percific table
+  async getAll(table) {
+    let currentTable = await getDoc(doc(db, "table", table));
+    if (!currentTable.exists) {
       return null;
     }
-  }
-  // Function getAll return all document of cards
-  async getAll() {
-    let doc = await getDocs(collection(db, 'card'));
-    let list = doc.docs;
-    let result = [];
-    list.forEach((ele) => {
-      let card = {};
-      card['id'] = ele.id;
-      card['highlight'] = ele.data().highlight;
-      card['expand'] = ele.data().expand;
-      card['table'] = ele.data().table;
-      card['isFavorite'] = ele.data().isFavorite;
-      result.push(card);
-    });
-    return result;
+    else {
+      let result = [];
+      let list = await (await getDocs(query(collection(db, "card"), where("table", "==", table)))).docs;
+      list.forEach((ele) => {
+        let card = {};
+        card['id'] = ele.id;
+        card['highlight'] = ele.data().highlight;
+        card['expand'] = ele.data().expand;
+        result.push(card);
+      });
+      return result;
+    }
+    
   }
 
   async update(id: string, body) {

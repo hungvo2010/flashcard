@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Next, Post, Render, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Next,
+  Post,
+  Render,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { CardService } from '../service/card.service';
 import { Request, Response, NextFunction } from 'express';
 import { CartDto } from 'src/dto/card.dto';
@@ -6,7 +15,7 @@ import { RCode } from 'src/constant/RCode';
 
 @Controller('cards')
 export class CardController {
-  constructor(private cardService: CardService) { }
+  constructor(private cardService: CardService) {}
 
   @Post('create')
   async create(
@@ -15,7 +24,12 @@ export class CardController {
     @Res() res: Response,
     // @Next() next: NextFunction,
   ) {
-    if (!cardBody || !cardBody.highlight || !cardBody.expand || !cardBody.table) {
+    if (
+      !cardBody ||
+      !cardBody.highlight ||
+      !cardBody.expand ||
+      !cardBody.table
+    ) {
       res.status(400).json({
         status: 'Create card failed',
         // message: 'Body data is invalid',
@@ -30,8 +44,7 @@ export class CardController {
         res.status(400).json({
           status: 'Create new card failed',
         });
-      }
-      else {
+      } else {
         res.status(400).json({
           status: 'Create new card which already existed.',
         });
@@ -42,33 +55,21 @@ export class CardController {
   @Post('')
   async getAll(
     @Req() req: Request,
-    @Res() res: Response,
-    @Next() next: NextFunction,
+    @Res() res: Response
   ) {
-    let result = await this.cardService.getAll();
-    res.status(200).json({
-      status: 'Get all cards succesfully',
-      size: result.length,
-      cards: result,
-    });
-  }
-
-  @Post(':id')
-  async getById(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Next() next: NextFunction,
-  ) {
-    let { id } = req.params;
-    let card = await this.cardService.get(id);
-    if (card != null) {
+    let { table } = req.body;
+    if (!table) {
       res.status(200).json({
-        status: `Get a Card with id = ${id} successfully`,
-        card,
+        status: 'No table',
+        result: 'failed',
       });
     } else {
-      res.status(400).json({
-        status: `Get a Card with id = ${id} failed`,
+      let result = await this.cardService.getAll(table);
+      res.status(200).json({
+        status: 'Get all cards succesfully',
+        size: result.length,
+        cards: result,
+        result: "success"
       });
     }
   }
@@ -96,8 +97,7 @@ export class CardController {
   @Post(':id/delete')
   async deleteCard(
     @Req() req: Request,
-    @Res() res: Response,
-    @Next() next: NextFunction,
+    @Res() res: Response
   ) {
     let { id } = req.params;
     let result = await this.cardService.delete(id);
@@ -114,5 +114,5 @@ export class CardController {
 
   @Get('')
   @Render('index')
-  getHomepageView(@Res() res: Response) { }
+  getHomepageView(@Res() res: Response) {}
 }
