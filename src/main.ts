@@ -7,11 +7,7 @@ import * as bodyParser from 'body-parser';
 
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(
-    AppModule
-  );
-
-  // console.log("PORT: ", process.env.PORT);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.use(CookieParser());
   app.use(bodyParser.urlencoded({ extended: false }));

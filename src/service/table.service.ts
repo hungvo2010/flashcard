@@ -1,5 +1,6 @@
 import { Injectable, Post, Req, Res } from '@nestjs/common';
 import { db } from '../database/firebase.config';
+import { v4 as uuid } from 'uuid';
 import {
   collection,
   getDoc,
@@ -15,19 +16,19 @@ import {
 @Injectable()
 export class TableService {
   async create(body) {
-    let flag = 0;
-    let tables = (await getDocs(collection(db, 'table'))).docs;
-    tables.forEach((doc) => {
-      if (doc.data().name == body.name) {
-        flag = 1;
-      }
-    });
-    // Truong hop chua co text
-    if (flag == 0) {
-      body['size'] = 0;
-      if (!body.isFavorite) body['isFavorite'] = false;
-      if (!body.description) body['description'] = '';
-      await setDoc(doc(db, 'table', (tables.length + 1).toString()), body);
+    let existData = await (
+      await getDocs(
+        query(collection(db, 'table'), where('name', '==', body.name)),
+      )
+    ).size;
+    if (existData == 0) {
+      let newTable = {};
+      newTable['name'] = body.name;
+      newTable['description'] = body.description ? body.description : '';
+      newTable['size'] = 0;
+      newTable['userID'] = body.userID;
+
+      await setDoc(doc(db, 'table', uuid()), newTable);
       return 1;
     } else {
       return 0;
@@ -45,25 +46,31 @@ export class TableService {
       table['name'] = data.data().name;
       table['description'] = data.data().description;
       table['size'] = data.data().size;
-      table['isFavorite'] = data.data().isFavorite;
       return table;
     }
   }
 
-  async getAll() {
-    let doc = await getDocs(collection(db, 'table'));
-    let list = doc.docs;
-    let result = [];
-    list.forEach((ele) => {
-      let table = {};
-      table['id'] = ele.id;
-      table['name'] = ele.data().name;
-      table['description'] = ele.data().description;
-      table['size'] = ele.data().size;
-      table['isFavorite'] = ele.data().isFavorite;
-      result.push(table);
-    });
-    return result;
+  async getAll(userID) {
+    let currentUser = await getDoc(doc(db, 'user', userID));
+    if (!currentUser.exists) {
+      return null;
+    } else {
+      let result = [];
+      let list = await (
+        await getDocs(
+          query(collection(db, 'table'), where('userID', '==', userID)),
+        )
+      ).docs;
+      list.forEach((ele) => {
+        let table = {};
+        table['id'] = ele.id;
+        table['name'] = ele.data().name;
+        table['description'] = ele.data().description;
+        table['size'] = ele.data().size;
+        result.push(table);
+      });
+      return result;
+    }
   }
 
   async update(id: string, body) {
@@ -78,17 +85,15 @@ export class TableService {
   }
 
   async delete(id: string) {
-    let ref = doc(db, 'table', id);
-    let data = await getDoc(ref);
-    if (!data.exists) {
+    let table = await getDoc(doc(db, 'table', id));
+    if (!table.exists) {
       return 0;
     } else {
-      let q = query(collection(db, 'card'), where('table', '==', data.id));
-      let cards = (await getDocs(q)).docs;
+      let cards = (await getDocs(query(collection(db, 'card'), where('table', '==', table.id)))).docs;
       for (let i = 0; i < cards.length; i++) {
         deleteDoc(doc(db, 'card', cards[i].id));
       }
-      await deleteDoc(ref);
+      await deleteDoc(doc(db, 'table', id));
       return 1;
     }
   }
