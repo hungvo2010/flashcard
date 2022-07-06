@@ -34,18 +34,8 @@ export class CardService {
       } else {
         await setDoc(doc(db, this.CARD_COLLECTION_NAME, uuid()), body);
 
-<<<<<<< HEAD
-      let tableQuery = query(collection(db, 'table'), where("name", "==", cardBody.table));
-      let updateTable = (await getDocs(tableQuery)).docs[0];
-      
-      // await updateDoc(updateTable, {
-      // size: updateTable["size"] + 1,
-      // });
-      
-      return RCode.SUCCESS;
-    }
-    catch (err) {
-=======
+
+
         let currentTable = await getDoc(doc(db, 'table', body.table));
         if (!currentTable.exists) return RCode.FAIL;
         else {
@@ -57,7 +47,7 @@ export class CardService {
         }
       }
     } catch (err) {
->>>>>>> 3ecb4b99495ad49d0fc3b518c762694c729e4920
+
       console.log(err);
       return RCode.FAIL;
     }
