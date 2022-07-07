@@ -17,6 +17,12 @@ import { RCode } from 'src/constant/RCode';
 export class CardController {
   constructor(private cardService: CardService) {}
 
+  @Get('/')
+  @Render('card')
+  doSomething(){}
+
+
+
   @Post('create')
   async create(@Req() req: Request, @Res() res: Response) {
     try {
