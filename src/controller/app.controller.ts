@@ -3,13 +3,13 @@ import { AppService } from '../service/app.service';
 import { Request, Response } from 'express';
 import { fstat, writeFile } from 'fs';
 import { CardController } from './card.controller';
-
+import { FileInterceptor } from '@nestjs/platform-express';
+import {Pdf} from "../Method/PDF"
 
 
 
 @Controller()
 export class AppController {
-
   constructor(private readonly appService: AppService) {
   }
 
@@ -54,7 +54,21 @@ export class AppController {
           result: 'failed',
         });
       } else {
-        const tables = await this.appService.getTables(user.userId);
+        let tables = await this.appService.getTables(user.userId);
+        tables = [
+          {
+          name: 1,
+          size: 10
+          }, 
+          {
+          name: 2,
+          size: 13
+          },
+          {
+            name: 3,
+            size: 15
+          },
+      ]
         res.render('user', {
           error: false,
           user,
@@ -113,4 +127,24 @@ export class AppController {
       });
     }
   }
+
+
+  @Post('/upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+    storage: Pdf.storage
+  }))
+
+  uploadFile(@UploadedFile() file) {
+    const response = Pdf.render("http://localhost:3000/" + file.filename)
+    return response
+        
+}
+
+
+    // @Get(':imgpath')
+    // seeUploadedFile(@Param('imgpath') image, @Res() res) {
+    //   return res.sendFile(image, { root: './uploads' });
+    // }
+
 }

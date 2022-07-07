@@ -14,13 +14,10 @@ import { CartDto } from 'src/dto/card.dto';
 import { RCode } from 'src/constant/RCode';
 import { collection, getDocs, where } from 'firebase/firestore';
 
+import { Method } from 'src/Method/Method';
 @Controller('cards')
 export class CardController {
   constructor(private cardService: CardService) { }
-
-  @Get('/')
-  @Render('card')
-  doSomething(){}
 
 
 
@@ -66,6 +63,20 @@ export class CardController {
   async getAll(@Req() req: Request, @Res() res: Response) {
     let tables = await this.cardService.getTables(req["user"].userId);
     let cardsResult = await this.cardService.getAllCardsOfTables(tables);
+    cardsResult = [
+      {
+        highlight: "aaaa",
+       expand: "aaa"  
+      },
+      {
+        highlight: "bbbb",
+       expand: "bbb"  
+      },
+      {
+        highlight: "cccc",
+        expand: "ccc"  
+      },
+    ]
     console.log(cardsResult);
     res.render('card', {
       cards: cardsResult,

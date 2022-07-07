@@ -1,7 +1,23 @@
+import { diskStorage } from "multer";
 import { Method } from "./Method";
 
 export abstract class Pdf extends Method {
-    static render(path: string) {
-        console.log('this is Pdf');
+    filename: string
+    path: string
+    static storage = diskStorage({
+        destination: './uploads',
+        filename: function (req, file, cb) {
+          cb(null, `${file.originalname}`);
+        },
+      })
+
+    constructor(pathInput: string, filenameInput: string){
+        super();
+        this.path = pathInput
+        this.filename = filenameInput
+    }
+    static render(pathI: string) {
+        const response = pathI
+        return response
     }
 }
