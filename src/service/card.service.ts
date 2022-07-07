@@ -14,11 +14,47 @@ import {
 import { CartDto } from 'src/dto/card.dto';
 import { RCode } from 'src/constant/RCode';
 import { v4 as uuid } from 'uuid';
+import { TableService } from './table.service';
 
 @Injectable()
 export class CardService {
+  async getAllCardsOfTables(tables: any[]) {
+    let results = [];
+    for (let table of tables) {
+      let cards = (await getDocs(query(collection(db, 'card'), where("table", "==", table.id)))).docs;
+      for (let card of cards) {
+        results.push(card.data());
+      }
+    }
+    return results;
+  }
+
   private readonly CARD_COLLECTION_NAME: string = 'card';
   private readonly cardCollection = collection(db, this.CARD_COLLECTION_NAME);
+  async getTables(userId: string) {
+    let currentUser = await getDoc(doc(db, 'user', userId));
+
+    if (!currentUser.exists) {
+      return [];
+    }
+    else {
+      let listTableRes = [];
+      let listDocs = (
+        await getDocs(
+          query(collection(db, 'table'), where('userId', '==', userId)),
+        )
+      ).docs;
+      listDocs.forEach((doc) => {
+        let table = {
+          ...doc.data(),
+          id: doc.id
+        }
+        listTableRes.push(table);
+      });
+      return listTableRes;
+    }
+  }
+
   async create(body: CartDto) {
     try {
       let cards = (
