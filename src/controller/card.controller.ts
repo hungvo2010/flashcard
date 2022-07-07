@@ -62,25 +62,19 @@ export class CardController {
   @Get('/')
   async getAll(@Req() req: Request, @Res() res: Response) {
     let tables = await this.cardService.getTables(req["user"].userId);
-    let cardsResult = await this.cardService.getAllCardsOfTables(tables);
-    cardsResult = [
-      {
-        highlight: "aaaa",
-       expand: "aaa"  
-      },
-      {
-        highlight: "bbbb",
-       expand: "bbb"  
-      },
-      {
-        highlight: "cccc",
-        expand: "ccc"  
-      },
-    ]
-    console.log(cardsResult);
-    res.render('card', {
-      cards: cardsResult,
-    })
+    if (tables != []) {
+      let cardsResult = [];
+      for (let i = 0; i <tables.length; i++) {
+        let cards = await this.cardService.getAll(tables[i].id);
+        cards.forEach(card => {
+          cardsResult.push(card);
+        })
+      }
+      res.render('card', {
+        cards: cardsResult,
+      })
+    }
+    
   }
 
 @Post(':id/update')

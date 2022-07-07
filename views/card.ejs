@@ -86,7 +86,7 @@
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header ">
-                                            <h5 id="title_popup " class="modal-title mx-5">Tạo card mới
+                                            <h5 id="title_popup " class="modal-title mx-5">Tạo thẻ ghi chú mới
                                                 </h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
@@ -95,21 +95,21 @@
                                                 <div class="mb-3 ">
                                                     <div class="row g-3 align-items-center my-3 mx-3 ">
                                                         <div class="col-4 ">
-                                                            <label for="inputName " class="col-form-label required ">Câu hỏi</label>
+                                                            <label for="inputName " class="col-form-label required ">Nội dung đánh dấu</label>
                                                         </div>
                                                         <div class="col-auto ">
                                                             <input type="text " id="inputName " class="form-control "
-                                                                placeholder="handilao ">
+                                                                placeholder="hello ">
                                                         </div>
                                                     </div>
                                                     <div class="row g-3 align-items-center my-3 mx-3 ">
                                                         <div class="col-4 ">
                                                             <label for="inputPassword "
-                                                                class="col-form-label required ">Câu trả lời</label>
+                                                                class="col-form-label required ">Nội dung ghi chú</label>
                                                         </div>
                                                         <div class="col ">
                                                             <input type="password " id="inputPassword "
-                                                                placeholder="@123 " class="form-control ">
+                                                                placeholder="xin chào " class="form-control ">
                                                         </div>
                                                     </div>
                                                     
@@ -117,7 +117,7 @@
                                             </form>
                                         </div>
                                         <div class="modal-footer ">
-                                            <button type="submit " class="btn btn-primary ">Tạo card</button>
+                                            <button type="submit " class="btn btn-primary ">Tạo thẻ</button>
                                             <button type="submit " class="btn btn-danger ">Hủy bỏ </button>
                                         </div>
                                     </div>
@@ -134,8 +134,8 @@
                         <thead>
                             <tr>
                                 <th scope="col ">STT</th>
-                                <th scope="col ">Câu hỏi</th>
-                                <th scope="col ">Câu trả lời</th>
+                                <th scope="col ">Nội dung đánh dấu</th>
+                                <th scope="col ">Nội dung ghi chú</th>
                                 
                                 <!-- <th scope="col ">Thời gian</th> -->
                             </tr>
@@ -145,9 +145,7 @@
                                 <tr>
                                     <th scope="row "><%= +idx + 1 %></th>
                                     <td><%= cards[idx].highlight %></td>
-
-                                    <td id="<%=idx%>" onclick="showAnswer('<%= cards[idx].expand %>', '<%=idx%>')"></td>
-                                    
+                                    <td id="<%=idx%>" onclick="showAnswer('<%= cards[idx].expand %>', '<%=idx%>')">Xem nội dung ghi chú</td>
                                 </tr>
                                 <% } %>
                         </tbody>
