@@ -136,15 +136,15 @@ export class AppController {
   }))
 
   uploadFile(@UploadedFile() file) {
-    const response = Pdf.render("http://localhost:3000/" + file.filename)
+    const response = Pdf.render("http://localhost:3000/file/" + file.filename)
     return response
         
 }
 
 
-    // @Get(':imgpath')
-    // seeUploadedFile(@Param('imgpath') image, @Res() res) {
-    //   return res.sendFile(image, { root: './uploads' });
-    // }
+    @Get('file/:imgpath')
+    seeUploadedFile(@Param('imgpath') image, @Res() res) {
+      return res.sendFile(image, { root: './uploads' });
+    }
 
 }
