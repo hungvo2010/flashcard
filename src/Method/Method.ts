@@ -1,17 +1,6 @@
-export class Method {
-    path: string;
-    constructor(path: string){}
-
-    render(url: string) {
-        return url
-    }
-
-    getHighlightText() {
-        let highlight = "";
-        return highlight;
-    }
-
-    sendInfo() {
-        let highlight, expand, accountID, table
-    }
-}
+export abstract class Method {
+    static render(path: string) {
+      console.log('this is methods');
+    };
+  }
+  
