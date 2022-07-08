@@ -14,8 +14,8 @@ export abstract class MethodManager {
         this.list['pdf'] = Pdf;
     }
 
-    static render(className: string ,path: string) {
-        this.list[className].render(path);
+    static render(className: string ,path) {
+        return this.list[className].render(path);
     }
 
     static len() {

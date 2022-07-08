@@ -1,12 +1,9 @@
 import { Controller, Get, Param, Post, Redirect, Render, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { AppService } from '../service/app.service';
 import { Request, Response } from 'express';
-import { fstat, writeFile } from 'fs';
-import { CardController } from './card.controller';
 import { FileInterceptor } from '@nestjs/platform-express';
-import {Pdf} from "../Method/PDF"
-
-
+import {MethodManager} from '../Method/MethodManager';
+import { Pdf } from 'src/Method/Pdf';
 
 @Controller()
 export class AppController {
@@ -16,6 +13,7 @@ export class AppController {
   @Get('/')
   // @Render('index')
   async getIndex(@Req() req: Request, @Res() res: Response) {
+    MethodManager.initialize();
     res.render('index', {
       embedContent: '',
       url: '',
@@ -26,16 +24,16 @@ export class AppController {
   @Get('/page')
   async getEmbedPage(@Req() req: Request, @Res() res: Response) {
     let address = req.query.address;
-    // console.log(address);
     if (!address) {
       return;
     }
-    // console.log(req["user"]);
 
     const tables = await this.appService.getTables(req["user"].userId);
     const htmlContent = await this.appService.getEmbedPageContent(
       address.toString(),
     );
+
+    // let data = MethodManager.render('web', address.toString());
     res.render('index', {
       embedContent: htmlContent,
       url: address,
@@ -122,7 +120,7 @@ export class AppController {
   }))
 
   uploadFile(@UploadedFile() file) {
-    const response = Pdf.render("http://localhost:3000/file/" + file.filename)
+    const response = MethodManager.render('pdf',"http://localhost:3000/file/" + file.filename);
     return response
         
 }

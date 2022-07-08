@@ -16,7 +16,7 @@ export abstract class Pdf extends Method {
         this.path = pathInput
         this.filename = filenameInput
     }
-    static render(pathI: string) {
+    static render(pathI) {
         const response = pathI
         return response
     }

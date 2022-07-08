@@ -18,70 +18,38 @@ saveCardBtn.addEventListener("click", () => {
 
 var temp;
 iframe.onload = function () {
-  //   // var doc = iframe.contentWindow.document;
-  //   // doc.addEventListener('mouseup', Handler);
-  //   // doc.addEventListener('mousedown', Handler);
-  //   // console.log(doc)
-  //   // iframe.document.addEventListener('mouseup', Handler)
-  //   window.addEventListener('mouseup', Handler)
   iframe.contentWindow.document.addEventListener('mousedown', onMouseDown);
   iframe.contentWindow.document.addEventListener('mouseup', onMouseUp);
   temp = document.querySelector('#shareBoxTemplate');
 }
 
-function upload(){
+function upload() {
   let fileElement = document.getElementById('fileInput')
 
-      // check if user had selected a file
-      if (fileElement.files.length === 0) {
-        alert('please choose a file')
-        return
-      }
-      file = fileElement.files[0]
-      
-      let formData = new FormData();
-      formData.set('file', file);
-      axios.post("/upload", formData, {
-        onUploadProgress: progressEvent => {
-          const percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          console.log(`upload process: ${percentCompleted}%`);
-        }
-      })
-        .then(res => {
-          
-          
-          console.log(res.data)
-          iframe = document.getElementById('iframe')
-          iframe.removeAttribute('srcdoc')
-          iframe.setAttribute('src', res.data)
-          
-        })
+  // check if user had selected a file
+  if (fileElement.files.length === 0) {
+    alert('please choose a file')
+    return
+  }
+  file = fileElement.files[0]
+
+  let formData = new FormData();
+  formData.set('file', file);
+  axios.post("/upload", formData, {
+    onUploadProgress: progressEvent => {
+      const percentCompleted = Math.round(
+        (progressEvent.loaded * 100) / progressEvent.total
+      );
+      console.log(`upload process: ${percentCompleted}%`);
     }
+  })
+    .then(res => {
+      iframe = document.getElementById('iframe')
+      iframe.removeAttribute('srcdoc')
+      iframe.setAttribute('src', res.data)
 
-
-    
-// iframe.addEventListener('load', function() {
-//   // Deliver the port to the iframe and initialize
-//   iframe.contentWindow.document.addEventListener('mouseup', Handler);
-//  })
-
-
-// function addressIP() {
-//   let query = document.getElementById("inputEmail3").value
-//   // console.log(query)
-//   fetch(query, {
-//     method: "GET",
-//   })
-//     .then(src => {
-
-//     })
-//   //document.getElementById("iframe").removeAttribute('src')
-//   iframe.setAttribute("src", query)
-// }
-
-
+    })
+}
 
 deleteCardBtn.addEventListener("click", () => {
   localStorage.clear();
@@ -135,7 +103,6 @@ flashcardMaker = (text, delThisIndex) => {
   document.querySelector("#flashcards").appendChild(flashcard);
 }
 
-// contentArray.forEach(flashcardMaker);
 
 function addFlashcard() {
   const highlightContent = highlight.value;
@@ -155,28 +122,19 @@ function addFlashcard() {
     },
     body: JSON.stringify(flashcard_info),
   })
-  .then(res => {
-    if (res.status === 201) {
-      contentArray.push(flashcard_info);
-      flashcardMaker(contentArray[contentArray.length - 1], contentArray.length - 1);
-    }
-    else {
-      return res.json();
-    }
-  })
-  .then(res => {
-    alert(res.status);
-  })
+    .then(res => {
+      if (res.status === 201) {
+        contentArray.push(flashcard_info);
+        flashcardMaker(contentArray[contentArray.length - 1], contentArray.length - 1);
+      }
+      else {
+        return res.json();
+      }
+    })
+    .then(res => {
+      alert(res.status);
+    })
 }
-//  var iframe = document.getElementById('iframe')
-//  iframe.contentWindow.document.addEventListener('mouseup', Handler);
-
-
-// iframe.contentWindow.addEventListener('mousedown', onMouseDown);
-// //document.addEventListener('mousedown', onMouseDown);
-// iframe.contentWindow.addEventListener('mouseup', onMouseUp);
-// //document.addEventListener('mouseup', onMouseUp);
-// var temp = document.querySelector('#shareBoxTemplate');
 
 function onMouseDown() {
   // console.log('haha')
