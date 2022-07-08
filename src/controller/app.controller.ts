@@ -55,20 +55,6 @@ export class AppController {
         });
       } else {
         let tables = await this.appService.getTables(user.userId);
-        tables = [
-          {
-          name: 1,
-          size: 10
-          }, 
-          {
-          name: 2,
-          size: 13
-          },
-          {
-            name: 3,
-            size: 15
-          },
-      ]
         res.render('user', {
           error: false,
           user,
